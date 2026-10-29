@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Family Circle</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Poppins:wght@400;600&family=Merriweather:wght@400;700&family=Pacifico&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f4f6ff;--card:#fff;--ink:#1d2340;--mute:#6b7396;--line:#e3e8fb;--accent:#5b5bd6;--accent2:#ff7eb6;--warn:#d98a00;--bad:#e5395b;--g1:color-mix(in srgb,var(--accent) 18%,#fff);--g2:color-mix(in srgb,var(--accent2) 22%,#fff);--sh:rgba(70,80,170,.14)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14191b;--card:#1d2427;--ink:#e8eeee;--mute:#93a1a5;--line:#2c373a;--accent:#5cc0ab;--warn:#e3b04b;--bad:#ef6f61}}
+:root[data-theme="dark"]{--bg:#14191b;--card:#1d2427;--ink:#e8eeee;--mute:#93a1a5;--line:#2c373a;--accent:#5cc0ab;--warn:#e3b04b;--bad:#ef6f61}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1000px;margin:0 auto;padding:16px clamp(12px,3vw,32px) 112px}
+h1{font-size:1.5rem;margin:0}h2{font-size:1rem;margin:28px 0 10px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.sub{color:var(--mute);margin:4px 0 16px}
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);padding:10px 14px;border-radius:10px;font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.av{width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;overflow:hidden;cursor:pointer}
+.av img{width:100%;height:100%;object-fit:cover;display:block}
+.pf{display:none}
+label.av:hover{filter:brightness(.9)}
+.hero{display:flex;align-items:flex-end;min-height:190px;border-radius:18px;padding:18px;margin-bottom:12px;cursor:pointer;position:relative;overflow:hidden;color:#fff;background:var(--accent) linear-gradient(135deg,var(--accent),#1f5a7a);background-size:cover;background-position:center}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0) 65%)}
+.heroT{position:relative;z-index:1}
+.hero h1{color:#fff;font-size:1.9rem;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.heroS{opacity:.92;margin-top:2px}
+.heroG{position:absolute;inset:0;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px}
+.heroG img{width:100%;height:100%;object-fit:var(--fit,cover);object-position:var(--pos,50% 50%);display:block}
+.heroH{position:absolute;top:12px;right:14px;z-index:1;font-size:.8rem;background:rgba(0,0,0,.3);padding:4px 10px;border-radius:99px}
+label.pl{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+.grow{flex:1;min-width:140px}
+.name{font-weight:650}.meta{color:var(--mute);font-size:.85rem}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.8rem;font-weight:600;border:1px solid var(--line)}
+.ok{color:var(--accent)}.stale{color:var(--warn)}.help{color:#fff;background:var(--bad);border-color:var(--bad)}
+button,select,input{font:inherit;color:var(--ink)}
+button{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+a.btn{display:inline-block;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--ink)}
+a.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:hover{filter:brightness(.96)}
+input,select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sos{width:100%;background:var(--bad);border-color:var(--bad);color:#fff;font-weight:700;padding:14px;font-size:1.05rem}
+.log{list-style:none;margin:0;padding:0;max-height:150px;overflow-y:auto}.log li{padding:3px 0;border-bottom:1px solid var(--line);font-size:.75rem}
+.log time{color:var(--mute);margin-right:8px}
+.add{display:flex;gap:8px;flex-wrap:wrap}
+.sw{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--mute)}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+#list,#live{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:10px}
+#list .card,#live .card{margin-bottom:0}
+#live>.actions{grid-column:1/-1}
+button,a.btn,label.pl,select,input{min-height:44px}
+a.btn,label.pl{display:inline-flex;align-items:center}
+input[type=checkbox],input[type=range],input[type=color]{min-height:0}
+input,select,textarea{font-size:max(16px,1rem)}
+.hero{min-height:clamp(150px,28vw,260px)}
+.hero h1{font-size:clamp(1.5rem,5vw,2.4rem)}
+.name,.meta{overflow-wrap:anywhere}
+.row>.grow{min-width:0}
+@media (max-width:480px){.actions>button,.actions>a.btn,.actions>label.pl{flex:1 1 auto;justify-content:center}.add input{flex:1 1 100%}}
+@media (min-width:900px){.sos{max-width:420px}}
+#chatFab{display:none!important}
+[data-tab]:not(.tab-on){display:none!important}
+#nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+#nav button{flex:1;border:0;border-radius:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 4px;min-height:58px;font-size:.75rem;color:var(--mute);position:relative}
+#nav button .ic{font-size:1.35rem;line-height:1}
+#nav button.on{color:var(--accent);font-weight:700}
+#nav button.on::before{content:"";position:absolute;top:0;left:25%;right:25%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
+@media (min-width:900px){#nav{left:50%;right:auto;width:min(520px,100%);transform:translateX(-50%);border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0}}
+#kidsPad,#kidsLock{display:none}
+:root.kids{--bg:#fff4d6;--card:#fff;--ink:#3b2f63;--mute:#7a6aa8;--line:#ffd98a;--accent:#ff7a59;--warn:#f5a623;--bad:#e5395b;font-size:18px}
+.kids body{font-family:'Nunito','Sarabun',system-ui,sans-serif}
+.kids #kidsPad,.kids #kidsLock{display:block}
+.kids .card{border-radius:24px;border:3px solid var(--line)}
+.kids button,.kids a.btn{border-radius:18px;font-weight:700;min-height:52px;border-width:2px}
+.kids .hero{border-radius:28px}
+.kids .name{font-size:1.2rem}
+.kids .av{width:64px;height:64px;font-size:1.6rem;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.kids .sos{font-size:1.3rem;padding:20px;border-radius:24px;max-width:none}
+.kids main>h2,.kids .note,.kids details,.kids #chatQ,.kids #chatConv,.kids #nav [data-t="more"],.kids .add:has(#newName),.kids main>.card[data-tab="home"]:not(#kidsPad),.kids [data-a="ask"],.kids [data-a="ok"],.kids [data-a="rm"],.kids #list .actions:has(.lc),.kids #list .actions:has([data-a="saveloc"]){display:none!important}
+.kids #nav button{font-size:.95rem;min-height:68px}.kids #nav .ic{font-size:1.9rem}
+#kidsGrid button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:100px;font-size:1.05rem;border:3px solid var(--line);border-radius:24px}
+#kidsGrid button.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+.kids #grpCard{display:none!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent2:#7aa8ff;--g1:color-mix(in srgb,var(--accent) 24%,#14191b);--g2:color-mix(in srgb,var(--accent2) 22%,#14191b);--sh:rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--accent2:#7aa8ff;--g1:color-mix(in srgb,var(--accent) 24%,#14191b);--g2:color-mix(in srgb,var(--accent2) 22%,#14191b);--sh:rgba(0,0,0,.4)}
+:root.kids{--accent2:#ffc247;--g1:#ffe9a8;--g2:#ffd1dc;--sh:rgba(180,120,0,.18)}
+html:not(.kids) body{background:radial-gradient(900px 420px at 0% -5%,var(--g1),transparent 65%),radial-gradient(800px 420px at 100% 0%,var(--g2),transparent 60%),var(--bg);background-attachment:fixed}
+html:not(.kids) .card{border-radius:20px;box-shadow:0 8px 26px var(--sh);border-color:var(--line)}
+html:not(.kids) .hero{border-radius:26px;box-shadow:0 16px 36px var(--sh);background-color:var(--accent);background-image:linear-gradient(135deg,var(--accent),var(--accent2))}
+html:not(.kids) .hero h1{letter-spacing:-.02em}
+html:not(.kids) h2{color:var(--accent);display:flex;align-items:center;gap:8px;font-weight:800}
+html:not(.kids) h2::before{content:"";width:6px;height:18px;border-radius:3px;background:linear-gradient(var(--accent),var(--accent2))}
+html:not(.kids) button,html:not(.kids) a.btn{border-radius:14px;transition:transform .12s,box-shadow .12s}
+html:not(.kids) button:hover,html:not(.kids) a.btn:hover{filter:none;transform:translateY(-1px);box-shadow:0 6px 16px var(--sh)}
+html:not(.kids) button:active{transform:scale(.97)}
+html:not(.kids) button.primary,html:not(.kids) a.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;box-shadow:0 6px 16px var(--sh)}
+html:not(.kids) .sos{background:linear-gradient(135deg,#ff5f6d,#e5395b);border:0;border-radius:18px;box-shadow:0 10px 24px rgba(229,57,91,.35)}
+html:not(.kids) .av{background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 3px var(--card),0 0 0 5px color-mix(in srgb,var(--accent) 40%,transparent)}
+html:not(.kids) .pill.ok{background:color-mix(in srgb,var(--accent) 12%,transparent);border-color:transparent}
+html:not(.kids) .pill.stale{background:color-mix(in srgb,var(--warn) 14%,transparent);border-color:transparent}
+html:not(.kids) .note{border-left-width:5px;border-image:linear-gradient(var(--accent),var(--accent2)) 1;border-radius:0 12px 12px 0}
+input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:1px;border-color:var(--accent)}
+html:not(.kids) #nav{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-bottom:0;border:1px solid var(--line);border-radius:26px;box-shadow:0 12px 32px var(--sh);background:color-mix(in srgb,var(--card) 90%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+html:not(.kids) #nav button{margin:6px 3px;min-height:52px;border-radius:20px}
+html:not(.kids) #nav button.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+html:not(.kids) #nav button.on::before{display:none}
+html:not(.kids) #nav button:hover{transform:none;box-shadow:none}
+@media (min-width:900px){html:not(.kids) #nav{left:50%;right:auto;width:min(520px,calc(100% - 24px));transform:translateX(-50%)}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="supabase-shim.js"></script>
+</head>
+<body>
+<main>
+  <label class="hero" id="hero" title="Click to change the cover photo. Right-click for more."><div class="heroG" id="heroG"></div><input class="pf" id="heroPf" type="file" accept="image/*" multiple><div class="heroH" id="heroH">Click to add a photo</div><div class="heroT"><h1 id="appTitle" title="Right-click to edit the title">Family Circle</h1><div class="heroS" id="heroSub">Check in, stay in touch, and know everyone is okay.</div></div></label>
+  <div id="titleEdit" class="add" style="display:none;margin:8px 0"><input id="titleIn" maxlength="40" aria-label="Title"><button class="primary" id="titleSave">Save</button></div>
+  <div class="actions" style="margin:0 0 14px"><button id="shareApp">Share app</button><button id="copyLink">Copy link</button><button id="themeBtn"></button><button id="kidsBtn">🧸 Kids mode</button><button id="palBtn">🎨 Theme</button></div>
+  <div class="note" id="tips" style="margin:0 0 14px">Tip: use the bar at the bottom to move around. Right-click (or press and hold) any text, photo or phone number to edit it.</div>
+  <div class="card" id="stylePanel" style="display:none;position:fixed;z-index:60;width:min(290px,calc(100vw - 16px));box-shadow:0 6px 24px rgba(0,0,0,.3)">
+    <b id="spName"></b>
+    <div id="spTitleRow" style="display:none;margin:8px 0"><input id="spTitleIn" maxlength="40" aria-label="Title text" style="width:100%"></div>
+    <div class="row"><label class="sw">Font <select id="fFont"><option value="">Default</option><option value="'Sarabun',sans-serif">Sarabun (Thai + English)</option><option value="'Nunito',sans-serif">Rounded</option><option value="'Poppins',sans-serif">Poppins</option><option value="'Merriweather',Georgia,serif">Serif</option><option value="'Pacifico',cursive">Handwritten</option><option value="'Courier New',monospace">Typewriter</option></select></label>
+    <label class="sw">Size <input type="range" id="fSize" min="10" max="48" step="1" value="16"> <span id="fSizeV">16 px</span></label></div>
+    <div class="actions"><label class="sw">Color <input type="color" id="fColor" value="#1f2a2e"></label><label class="sw"><input type="checkbox" id="fBold"> Bold</label><label class="sw"><input type="checkbox" id="fOne"> Only this one</label><button id="fReset">Reset</button><button id="fClose">Close</button></div>
+  </div>
+  <div class="note">Everyone in the circle sees the same information, and each person controls their own sharing. Nothing is shared unless that person turns it on. This demo keeps data on this device only; syncing between phones needs a server.</div>
+
+  <div class="note" id="shareBox" style="display:none;margin-top:10px"><span id="shareHead"></span><textarea id="shareTxt" readonly rows="3" style="width:100%;margin:6px 0;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit"></textarea><button id="shareClose">Close</button></div>
+  <div id="kidsPad" class="card"><div id="kidsHi" style="font-size:1.4rem;font-weight:800;margin-bottom:10px"></div><div id="kidsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px"></div><div id="kidsMsg" style="min-height:1.6em;margin-top:10px;font-weight:700;text-align:center"></div></div>
+  <h2>Me</h2>
+  <div class="card">
+    <div class="row">
+      <label class="av" title="Change my photo"><span id="meImg" style="display:contents"></span><input class="pf mepf" type="file" accept="image/*"></label>
+      <div class="grow"><div class="name" id="meName"></div><div class="meta">Update your status for the family</div></div>
+      <select id="statusSel"></select>
+      <button class="primary" id="checkBtn">Check in</button>
+    </div>
+    <div class="actions">
+      <button id="meRm" style="display:none"></button>
+      
+      <label class="sw"><input type="checkbox" id="shareLoc"> Share my location with the family</label>
+      <label class="sw"><input type="checkbox" id="shareBat"> Share my battery level</label>
+      <label class="sw"><input type="checkbox" id="shareLive"> Live tracking (keep this page open)</label>
+    </div>
+    <div class="meta" id="locMsg" style="margin-top:6px"></div>
+    <div class="actions" id="meLocBtns" style="display:none"><a class="btn primary" id="meMapLink" href="#" target="_blank" rel="noopener">View on Google Maps</a><button id="meShareLoc">Share my location</button><button id="meRefresh">Update location</button></div>
+    <div class="actions" id="manLoc" style="display:none"><input id="manIn" placeholder="Paste coordinates, e.g. 13.7563, 100.5018" style="flex:1;min-width:200px"><button id="manBtn" class="primary">Use this location</button></div>
+  </div>
+  <button class="sos" id="sosBtn">I need help — alert family</button>
+  <div id="kidsLock" class="meta" style="margin-top:14px;text-align:center"><span id="lockOpen" style="text-decoration:underline;cursor:pointer">🔒 Grown-ups</span><span id="lockBox" style="display:none"><span id="lockQ"></span><input id="lockIn" inputmode="numeric" aria-label="Answer" style="width:70px"> <button id="lockGo">OK</button></span></div>
+
+  <h2>Family group</h2>
+  <div class="card" id="grpCard"><div id="grpHas" style="display:none"><div class="name" id="grpName"></div><div class="meta">Invite code: <b id="grpCode"></b></div><div class="actions"><button class="primary" id="grpInvite">Invite members</button><button id="grpCopy">Copy code</button><button id="grpLeave">Leave group</button></div><div class="meta" id="grpMem" style="margin-top:8px"></div><div id="grpMembers" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px;margin-top:10px"></div><div class="meta" style="margin-top:6px">To let someone in, also use Claude’s Share button on this page and give them Contributor access, then send them the code.</div></div>
+    <div id="grpNone"><div class="meta">Create a family group and invite members with its code, or join a group with a code you received.</div><div class="actions"><input id="grpNew" maxlength="30" placeholder="Group name, then press Enter to create" enterkeyhint="go" style="flex:1;min-width:180px"></div><div class="actions"><input id="grpJoin" maxlength="8" placeholder="Invite code, then press Enter to join" enterkeyhint="go" style="flex:1;min-width:140px;text-transform:uppercase"></div><div class="meta" id="grpMsg" style="margin-top:6px"></div></div></div>
+  <h2>Family map</h2>
+  <div class="card" style="padding:0;overflow:hidden;position:relative"><canvas id="fmap" style="width:100%;height:min(60vh,520px);display:block;touch-action:none;cursor:grab"></canvas><div id="mBadge" style="position:absolute;left:10px;top:10px;background:rgba(0,0,0,.55);color:#fff;border-radius:99px;padding:4px 12px;font-size:.8rem;font-weight:700"></div>
+    <div style="position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px"><button id="mZi" aria-label="Zoom in" style="width:44px">+</button><button id="mZo" aria-label="Zoom out" style="width:44px">−</button><button id="mMe" aria-label="Center on me" style="width:44px">◎</button><button id="mAll" aria-label="Show everyone" style="width:44px">⤢</button><button id="mFol" aria-label="Follow me" title="Follow me" style="width:44px">🧭</button></div>
+    <div id="mInfo" class="meta" style="padding:10px 12px"></div><div id="mList" style="padding:0 12px 12px"></div></div>
+  <h2>Family</h2>
+  <div id="list"></div>
+  <div class="add">
+    <input id="newName" placeholder="Add a family member" aria-label="Name">
+    <input id="newPhone" placeholder="Phone (+66…)" aria-label="Phone" inputmode="tel">
+    <button id="addBtn">Add</button>
+  </div>
+
+  <h2>Live family</h2>
+  <div class="note" id="liveNote"></div>
+  <div id="live" style="margin-top:10px"></div>
+
+  <div class="card" id="chatWin" style="display:none;position:fixed;right:max(8px,env(safe-area-inset-right,0px));bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:40;width:min(400px,calc(100vw - 16px));max-height:calc(100vh - 110px);overflow:auto;margin:0;box-shadow:0 8px 30px rgba(0,0,0,.35)"><div class="row" style="margin-bottom:8px"><b class="grow">Family chat</b><button id="chatClose" aria-label="Close chat">✕</button></div><select id="chatConv" aria-label="Conversation" style="width:100%;margin-bottom:8px"></select><input id="chatQ" placeholder="Search messages" aria-label="Search messages" style="width:100%;margin-bottom:8px"><div id="chatBox" style="height:min(320px,40vh);overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div><div class="meta" id="chatTyp" style="min-height:1.4em"></div><div id="chatBar" class="meta" style="display:none;margin-top:4px"></div><div id="chatEmo" style="display:none;margin-top:6px;font-size:1.4rem;line-height:1.7"></div><div id="chatCmd" style="display:none;margin-top:6px;border:1px solid var(--line);border-radius:12px;max-height:200px;overflow:auto;background:var(--card)"></div><div class="meta" id="chatSys" style="margin-top:6px"></div>
+    <div class="add" style="margin-top:10px"><button id="chatEmoBtn" aria-label="Emoji">😊</button><label class="pl" title="Photo or file">📎<input class="pf" id="chatFile" type="file"></label><button id="chatMic" aria-label="Voice note">🎤</button><button id="chatLoc" aria-label="Send my location">📍</button><button id="chatProg" aria-label="Chat programs" title="Chat programs">⚡</button><input id="chatIn" maxlength="500" placeholder="Write a message to your family" aria-label="Message" style="flex:1;min-width:140px"><button id="chatSend" class="primary">Send</button></div>
+    <div class="meta" id="chatNote" style="margin-top:6px"></div>
+    <details class="meta" style="margin-top:6px"><summary style="cursor:pointer">Share live location with Google Maps</summary><ol style="margin:6px 0;padding-left:20px"><li>Open Google Maps and tap your profile picture.</li><li>Choose Location sharing, then New share.</li><li>Choose “Until you turn this off” and pick a family contact.</li></ol><a class="btn" href="https://www.google.com/maps" target="_blank" rel="noopener">Open Google Maps</a></details></div>
+
+  <button id="chatFab" aria-label="Open family chat" style="position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:41;width:58px;height:58px;border-radius:50%;padding:0;background:var(--accent);border-color:var(--accent);color:#fff;font-size:1.5rem;box-shadow:0 4px 14px rgba(0,0,0,.35)">💬<span id="chatBadge" style="display:none;position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--bad);color:#fff;font-size:.75rem;line-height:20px;padding:0 5px"></span></button>
+  <h2>Activity</h2>
+  <ul class="log" id="log"></ul>
+</main>
+<div id="palPop" class="card" style="display:none;position:fixed;z-index:75;width:min(320px,calc(100vw - 16px));margin:0;box-shadow:0 8px 28px rgba(0,0,0,.3)"><b>Choose a theme</b><div class="meta">Day and night mode have their own button.</div><div id="palGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-top:10px"></div></div>
+<div id="cropPop" style="display:none;position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:12px"><div class="card" style="margin:0;width:min(320px,100%);text-align:center"><b>Adjust photo</b><div class="meta" style="margin:4px 0 8px">Drag the photo to move it. Use the slider to zoom.</div><canvas id="cropCv" width="280" height="280" style="width:280px;height:280px;touch-action:none;border-radius:12px;cursor:grab"></canvas><input type="range" id="cropZ" min="0.3" max="4" step="0.02" value="1" aria-label="Zoom" style="width:100%;margin:10px 0"><div class="actions" style="justify-content:center;margin:0"><button class="primary" id="cropOk">Save</button><button id="cropNo">Cancel</button></div></div></div>
+<nav id="nav" aria-label="Main"><button data-t="home" class="on"><span class="ic">🏠</span>Home</button><button data-t="family"><span class="ic">👨‍👩‍👧</span>Family</button><button data-t="map"><span class="ic">🗺️</span>Map</button><button id="navChat"><span class="ic">💬</span>Chat<span id="navBadge" style="display:none;position:absolute;top:4px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-size:.7rem;line-height:18px;padding:0 4px"></span></button><button data-t="more"><span class="ic">⚙️</span>More</button></nav>
+<div id="phPop" class="card" style="display:none;position:fixed;z-index:70;width:min(260px,calc(100vw - 16px));margin:0;box-shadow:0 6px 24px rgba(0,0,0,.3)"><b id="phName"></b><input id="phIn" inputmode="tel" placeholder="+66812345678" aria-label="Phone number" style="width:100%;margin:8px 0"><div class="actions" style="margin:0"><button class="primary" id="phSave">Save</button><button id="phClear">Clear</button></div></div>
+<div id="avMenu" style="display:none;position:fixed;z-index:50;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:4px;box-shadow:0 4px 16px rgba(0,0,0,.25)"><button id="avChange" style="display:block;width:100%;border:0;background:none;text-align:left">Change photo</button><button id="avRemove" style="display:block;width:100%;border:0;background:none;text-align:left">Remove photo</button><button id="avPhone" style="display:block;width:100%;border:0;background:none;text-align:left">Phone number</button><button id="avFit" style="display:none;width:100%;border:0;background:none;text-align:left"></button><button id="avPos" style="display:none;width:100%;border:0;background:none;text-align:left"></button><button id="avName" style="display:block;width:100%;border:0;background:none;text-align:left">Change name</button><div id="avNameRow" style="display:none;padding:4px"><input id="avNameIn" maxlength="30" aria-label="Name" style="width:150px"><button id="avNameSave" class="primary" style="margin-top:4px">Save</button></div></div>
+<script>
+(function(){
+var STATUS=["Safe","At home","At school","At work","On the way","Playing"];
+var KEY="family-circle-v1";
+var S=null;
+function load(){try{var r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return null}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(window.pushMe)window.pushMe()}
+function now(){return Date.now()}
+S=load()||{me:"You",meStatus:"Safe",shareLoc:false,shareBat:false,
+  members:[{n:"Mom",s:"At work",t:now()-36e5,req:false},{n:"Dad",s:"On the way",t:now()-2*36e5,req:false},{n:"Alex",s:"At school",t:now()-15*36e5,req:false}],
+  meLast:now(),meLoc:null,meBat:null,log:[]};
+function log(m){S.log.unshift({t:now(),m:m});S.log=S.log.slice(0,30);save()}
+function ago(t){var m=Math.round((now()-t)/6e4);if(m<1)return "just now";if(m<60)return m+" min ago";var h=Math.floor(m/60);if(h<24)return h+" h ago";return Math.floor(h/24)+" d ago"}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var $=function(i){return document.getElementById(i)};
+function fill(){var sel=$("statusSel");sel.innerHTML=STATUS.map(function(x){return "<option"+(x===S.meStatus?" selected":"")+">"+x+"</option>"}).join("")}
+var APP_URL="https://claude.ai/artifact/JogTWPfBySPEDykkMRLuSy";
+function mapUrl(a,b){return "https://www.google.com/maps?q="+a+","+b}
+function parseLoc(t){t=t.trim();var m=t.match(/(-?\d{1,3}\.\d+)\s*[,\s]\s*(-?\d{1,3}\.\d+)/);if(m)return mapUrl(m[1],m[2]);try{var u=new URL(t);if(/(^|\.)(google\.[a-z.]+|goo\.gl)$/.test(u.hostname))return u.href}catch(e){}return null}
+function box(msg,ok){$("shareHead").textContent=ok?"Copied. Paste it into your chat app:":"Copy this and send it to your family:";$("shareTxt").value=msg;$("shareBox").style.display="block";$("shareTxt").select()}
+function share(text,url){var msg=text+" "+url;
+  if(navigator.share){navigator.share({title:S.title||"Family Circle",text:text,url:url}).catch(function(e){if(!e||e.name!=="AbortError")box(msg,false)});return}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(function(){box(msg,true)},function(){box(msg,false)});return}
+  box(msg,false)}
+function locRow(m,i){
+  if(!m.loc)return '<div class="actions"><input class="lc" data-i="'+i+'" placeholder="Paste Google Maps link or lat,lon" style="flex:1;min-width:180px"><button data-a="saveloc" data-i="'+i+'">Save location</button></div>';
+  return '<div class="actions"><span class="meta" style="align-self:center">Location saved '+ago(m.loc.t)+'</span><a class="btn primary" href="'+esc(m.loc.url)+'" target="_blank" rel="noopener">View on Google Maps</a><button data-a="shareloc" data-i="'+i+'">Share</button><button data-a="clrloc" data-i="'+i+'">Update</button></div>';
+}
+function contact(m,i){
+  if(!m.p)return '<div class="actions" data-ph="'+i+'"><button data-a="callnew" data-i="'+i+'">Call</button></div>';
+  var d=m.p.replace(/[^\d+]/g,""),w=d.replace(/\D/g,"");
+  return '<div class="actions" data-ph="'+i+'"><span class="meta" style="align-self:center">'+esc(m.p)+'</span><a class="btn primary" href="tel:'+d+'">Call</a><a class="btn" href="facetime:'+d+'">FaceTime video</a><a class="btn" href="https://wa.me/'+w+'" target="_blank" rel="noopener">WhatsApp</a></div>';
+}
+function render(){
+  $("meName").textContent=S.me+" · last check-in "+ago(S.meLast);
+  $("shareLoc").checked=S.shareLoc;$("shareBat").checked=S.shareBat;
+  $("meImg").innerHTML=S.meImg?'<img src="'+S.meImg+'" alt="">':esc((S.me||"?")[0].toUpperCase());
+  
+  $("appTitle").textContent=S.title||"Family Circle";document.title=S.title||"Family Circle";
+  $("heroSub").textContent=S.sub||DEFSUB;
+  var cv=S.covers||(S.cover?[S.cover]:[]);$("heroG").innerHTML=cv.map(function(u){return '<img src="'+u+'" alt="">'}).join("");$("heroG").style.setProperty("--fit",S.coverFit==="contain"?"contain":"cover");$("heroG").style.setProperty("--pos",{top:"50% 0%",center:"50% 50%",bottom:"50% 100%"}[S.coverPos||"center"]);
+  $("heroH").style.display=cv.length?"none":"block";mapUpdate();grpUi();
+  var ml=S.shareLoc&&S.meLoc;$("meLocBtns").style.display=ml?"flex":"none";if(ml)$("meMapLink").href=mapUrl(S.meLoc.lat,S.meLoc.lon);
+  var parts=[];
+  if(S.shareLoc&&S.meLoc)parts.push("Location shared: "+S.meLoc.lat.toFixed(4)+", "+S.meLoc.lon.toFixed(4)+" ("+ago(S.meLoc.t)+")");
+  if(S.shareBat&&S.meBat!=null)parts.push("Battery: "+S.meBat+"%");
+  $("locMsg").textContent=parts.join(" · ");
+  $("list").innerHTML=S.members.map(function(m,i){
+    var hrs=(now()-m.t)/36e5,stale=hrs>12,help=m.s==="Needs help";
+    var pill=help?'<span class="pill help">Needs help</span>':'<span class="pill '+(stale?"stale":"ok")+'">'+(stale?"No update in "+Math.floor(hrs)+" h":esc(m.s))+'</span>';
+    return '<div class="card"><div class="row"><label class="av" title="Change photo">'+(m.img?'<img src="'+m.img+'" alt="">':esc(m.n[0].toUpperCase()))+'<input class="pf" type="file" accept="image/*" data-i="'+i+'"></label><div class="grow"><div class="name">'+esc(m.n)+'</div><div class="meta">Checked in '+ago(m.t)+(m.req?" · check-in requested":"")+'</div></div>'+pill+'</div>'+
+    contact(m,i)+locRow(m,i)+'<div class="actions"><button data-a="ask" data-i="'+i+'">Ask to check in</button><button data-a="ok" data-i="'+i+'">Mark as heard from</button><button data-a="rm" data-i="'+i+'">Remove</button></div></div>';
+  }).join("")||'<div class="meta">No one added yet.</div>';
+  $("log").innerHTML=S.log.map(function(l){return "<li><time>"+ago(l.t)+"</time>"+esc(l.m)+"</li>"}).join("")||'<li class="meta">Nothing yet.</li>';applyItems();
+}
+$("checkBtn").onclick=function(){S.meStatus=$("statusSel").value;S.meLast=now();log(S.me+" checked in: "+S.meStatus);render()};
+$("sosBtn").onclick=function(){if(armed!==this){arm(this,"Tap again to send the help alert");return}disarm(this);S.meStatus="Needs help";S.meLast=now();log("ALERT: "+S.me+" asked for help");fill();render()};
+$("addBtn").onclick=function(){var v=$("newName").value.trim();if(!v)return;S.members.push({n:v,p:$("newPhone").value.trim(),s:"Safe",t:now(),req:false});log(v+" joined the circle");$("newName").value="";$("newPhone").value="";render()};
+$("list").onclick=function(e){var b=e.target.closest("button");if(!b)return;var i=+b.dataset.i,m=S.members[i];
+  if(b.dataset.a==="ask"){m.req=true;log("You asked "+m.n+" to check in")}
+  else if(b.dataset.a==="ok"){m.t=now();m.req=false;if(m.s==="Needs help")m.s="Safe";log("You heard from "+m.n)}
+  else if(b.dataset.a==="saveloc"){var li=document.querySelector('.lc[data-i="'+i+'"]');var lu=li?parseLoc(li.value):null;if(!lu){if(li){li.value="";li.placeholder="Not valid. Use lat,lon or a Google Maps link"}return}m.loc={url:lu,t:now()};log("Location saved for "+m.n)}
+  else if(b.dataset.a==="shareloc"){share(m.n+"’s location:",m.loc.url);return}
+  else if(b.dataset.a==="clrloc"){m.loc=null}
+  else if(b.dataset.a==="callnew"){openPhone(b,i);return}
+  else if(b.dataset.a==="savep"){var inp=document.querySelector('.ph[data-i="'+i+'"]');var pv=inp?inp.value.trim():"";if(pv.replace(/\D/g,"").length<6){if(inp){inp.value="";inp.placeholder="Enter a valid number"}return}m.p=pv;log("Phone number added for "+m.n)}
+  else if(b.dataset.a==="editp"){m.p=""}
+  else if(b.dataset.a==="rmimg"){delete m.img;log("Photo removed for "+m.n)}
+  else if(b.dataset.a==="rm"){if(armed!==b){arm(b,"Tap again to remove");return}disarm(b);S.members.splice(i,1);log(m.n+" was removed")}
+  save();render()};
+$("list").addEventListener("change",function(e){
+  var t=e.target;if(!t.classList.contains("pf")||!t.files[0])return;
+  var i=+t.dataset.i,r=new FileReader();
+  r.onload=function(){var im=new Image();im.onload=function(){
+    var c=document.createElement("canvas"),s=160;c.width=c.height=s;
+    var k=Math.min(im.width,im.height);
+    c.getContext("2d").drawImage(im,(im.width-k)/2,(im.height-k)/2,k,k,0,0,s,s);
+    S.members[i].img=c.toDataURL("image/jpeg",.8);log("Photo updated for "+S.members[i].n);save();render()};
+    im.src=r.result};
+  r.readAsDataURL(t.files[0]);
+});
+document.querySelectorAll(".mepf").forEach(function(inp){inp.onchange=function(){
+  var f=inp.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){var im=new Image();im.onload=function(){
+    var c=document.createElement("canvas"),s=160;c.width=c.height=s;
+    var k=Math.min(im.width,im.height);
+    c.getContext("2d").drawImage(im,(im.width-k)/2,(im.height-k)/2,k,k,0,0,s,s);
+    S.meImg=c.toDataURL("image/jpeg",.8);log(S.me+" updated their photo");save();render()};
+    im.src=r.result};
+  r.readAsDataURL(f);inp.value=""}});
+var avTarget=null;
+document.addEventListener("contextmenu",function(e){
+  var a=e.target.closest&&e.target.closest("label.av");if(!a)return;
+  e.preventDefault();avTarget=a;
+  $("avChange").style.display="block";$("avName").style.display="block";$("avNameRow").style.display="none";$("avFit").style.display="none";$("avPos").style.display="none";$("avPhone").style.display="block";
+  $("avRemove").style.display=a.querySelector("img")?"block":"none";
+  var mn=$("avMenu");mn.style.display="block";
+  mn.style.left=Math.max(4,Math.min(e.clientX,window.innerWidth-170))+"px";mn.style.top=e.clientY+"px"});
+document.addEventListener("click",function(e){if(!e.target.closest("#avMenu"))$("avMenu").style.display="none"});
+$("avChange").onclick=function(){$("avMenu").style.display="none";if(avTarget)avTarget.querySelector("input.pf").click()};
+$("avName").onclick=function(){if(!avTarget)return;var inp=avTarget.querySelector("input.pf");
+  var cur=inp.classList.contains("mepf")?S.me:(S.members[+inp.dataset.i]||{}).n;
+  $("avChange").style.display="none";$("avRemove").style.display="none";$("avName").style.display="none";
+  $("avNameRow").style.display="block";$("avNameIn").value=cur||"";$("avNameIn").focus();$("avNameIn").select()};
+function saveName(){var v=$("avNameIn").value.trim();$("avMenu").style.display="none";if(!v||!avTarget)return;
+  var inp=avTarget.querySelector("input.pf");
+  if(inp.classList.contains("mepf")){S.me=v;log("You changed your name to "+v)}
+  else{var m=S.members[+inp.dataset.i];if(m){log(m.n+" renamed to "+v);m.n=v}}
+  save();render()}
+$("avNameSave").onclick=saveName;
+$("avNameIn").onkeydown=function(e){if(e.key==="Enter")saveName();if(e.key==="Escape")$("avMenu").style.display="none"};
+$("avFit").onclick=function(){S.coverFit=S.coverFit==="contain"?"cover":"contain";$("avMenu").style.display="none";save();render()};
+$("avPos").onclick=function(){var o=["top","center","bottom"],i=o.indexOf(S.coverPos||"center");S.coverPos=o[(i+1)%3];$("avMenu").style.display="none";save();render()};
+$("avRemove").onclick=function(){$("avMenu").style.display="none";if(!avTarget)return;
+  var inp=avTarget.querySelector("input.pf");
+  if(inp.id==="heroPf"){delete S.cover;delete S.covers;log("Cover photos removed")}
+  else if(inp.classList.contains("mepf")){delete S.meImg;log(S.me+" removed their photo")}
+  else{var i=+inp.dataset.i;if(S.members[i]){delete S.members[i].img;log("Photo removed for "+S.members[i].n)}}
+  save();render()};
+$("manBtn").onclick=function(){var t=$("manIn").value,m=t.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/)||t.match(/(-?\d{1,3}\.\d+)\s*[,\s]\s*(-?\d{1,3}\.\d+)/);
+  var la=m?+m[1]:NaN,lo=m?+m[2]:NaN;
+  if(!(Math.abs(la)<=90&&Math.abs(lo)<=180)){$("manIn").value="";$("manIn").placeholder="Not valid. Use numbers like 13.7563, 100.5018";return}
+  S.shareLoc=true;S.meLoc={lat:la,lon:lo,t:now()};log(S.me+" is sharing location");
+  $("manLoc").style.display="none";$("manIn").value="";save();render()};
+function isDark(){return S.theme?S.theme==="dark":!!(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)}
+function applyTheme(){if(S.theme)document.documentElement.setAttribute("data-theme",S.theme);else document.documentElement.removeAttribute("data-theme");$("themeBtn").textContent=isDark()?"☀ Day mode":"🌙 Night mode";applyPal()}
+$("themeBtn").onclick=function(){S.theme=isDark()?"light":"dark";applyTheme();save();mapDraw()};
+applyTheme();
+function chatRenderOld(){var b=$("chatBox"),on=!!(db&&myId);$("chatIn").disabled=!on;$("chatSend").disabled=!on;
+  $("chatNote").textContent=on?"Only people you invited to this page can read and write here.":"Chat works on the shared page when you are signed in to Claude.";
+  var near=b.scrollHeight-b.scrollTop-b.clientHeight<60;
+  b.innerHTML=on&&CHAT.length?CHAT.map(function(m){var me=m.u===myId;
+    return '<div style="align-self:'+(me?"flex-end":"flex-start")+';max-width:85%;background:'+(me?"var(--accent)":"var(--bg)")+';color:'+(me?"#fff":"inherit")+';border:1px solid var(--line);border-radius:14px;padding:6px 12px"><div style="font-size:.75rem;opacity:.8">'+esc(me?"You":(m.name||"Family"))+' · '+ago(m.t||0)+'</div><div style="overflow-wrap:anywhere;white-space:pre-wrap">'+esc(String(m.text||""))+'</div></div>'}).join(""):'<div class="meta">No messages yet.</div>';
+  if(near)b.scrollTop=b.scrollHeight}
+function chatSendOld(){var v=$("chatIn").value.trim();if(!v||!db||!myId)return;$("chatIn").value="";
+  db.collection("chat").doc().set({u:myId,name:S.me,text:v.slice(0,500),t:now()}).catch(function(){$("chatNote").textContent="Message not sent. You may need Contributor access.";$("chatIn").value=v})}
+
+var META=[],CL=60,unsubChat=null,replyTo=null,editId=null,keepPos=false,myGot=0,mySeen=0,myTyp=0,lastTypW=0,rec=null,EDIT_MS=15*60000;
+var EMOS=["😀","😂","😍","🥰","😘","😎","🤗","🙏","👍","👏","🎉","❤️","💪","😢","😮","😡","🙌","🍚","☕","🏠","🚗","🎂","🌞","🌙"];
+$("chatEmo").innerHTML=EMOS.map(function(e){return '<span data-e="'+e+'" style="cursor:pointer;padding:2px 4px">'+e+'</span>'}).join("");
+function subChat(){if(!db)return;if(unsubChat)unsubChat();
+  unsubChat=db.collection("chat").orderBy("t","desc").limit(CL).onSnapshot(function(s){RAWCHAT=s.docs.map(function(d){var x=d.data()||{};x.id=d.id;return x}).reverse();grp();chatRender()},function(){})}
+function pushMeta(){if(!db||!myId||!S.gid)return;db.doc("chatmeta/"+myId).set({g:S.gid,name:S.me,got:myGot,seen:mySeen,typ:myTyp}).catch(function(){})}
+function chatRender(){
+  convOpts();var b=$("chatBox"),on=!!(db&&myId&&S.gid),q=$("chatQ").value.trim().toLowerCase();
+  $("chatIn").disabled=!on;$("chatSend").disabled=!on;
+  $("chatNote").textContent=on?"Only people you invited to this page can read and write here. Direct messages are shown only to the two people, but they are not encrypted, so don’t send secrets. You can edit or delete your own messages for 15 minutes.":((db&&myId)?"Create or join a family group on the Family tab to use the chat.":"Chat works on the shared page when you are signed in to Claude.");
+  var others=META.filter(function(x){return x.id!==myId&&(curConv==="g"||curConv.split("_").indexOf(x.id)>=0)}),near=b.scrollHeight-b.scrollTop-b.clientHeight<60,ph=b.scrollHeight;
+  var list=CHAT.filter(function(m){if(!rel(m)||(m.c||"g")!==curConv)return false;return !q||String(m.text||"").toLowerCase().indexOf(q)>=0||String(m.name||"").toLowerCase().indexOf(q)>=0});
+  b.innerHTML=on&&list.length?list.map(function(m){
+    var me=m.u===myId,w=now()-(m.t||0)<EDIT_MS,body="",tick="",acts="",rxh="",dd=String(m.data||"");
+    if(m.deleted)body='<i>Message deleted</i>';
+    else{
+      if(m.r)body+='<div style="border-left:3px solid var(--line);padding-left:8px;margin-bottom:4px;font-size:.8rem;opacity:.85">'+esc(m.r.n||"")+': '+esc(m.r.t||"")+'</div>';
+      if(m.k==="poll"&&Array.isArray(m.opts)){var vt=m.votes||{};body+='<div><b>📊 '+esc(String(m.q||""))+'</b></div>'+m.opts.map(function(o,i){var n=Object.keys(vt).filter(function(u){return vt[u]===i}).length,mine=vt[myId]===i;return '<div data-act="vote" data-id="'+m.id+'" data-i="'+i+'" style="cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin-top:4px;'+(mine?'background:rgba(255,255,255,.28);font-weight:700':'')+'">'+esc(String(o))+' · '+n+'</div>'}).join("")}
+      if(m.k==="list"&&Array.isArray(m.items)){var dn=m.done||{};body+='<div><b>'+esc(String(m.ic||"")+" "+String(m.q||"List"))+'</b></div>'+m.items.map(function(it,i){var d=dn[i];return '<div data-act="tick" data-id="'+m.id+'" data-i="'+i+'" style="cursor:pointer;padding:3px 0;'+(d?'text-decoration:line-through;opacity:.7':'')+'">'+(d?'\u2611 ':'\u2610 ')+esc(String(it))+(d?' <span style="font-size:.75rem">('+esc(String(d))+')</span>':'')+'</div>'}).join("")}
+      if(m.k==="task"){body+='<div style="overflow-wrap:anywhere">'+esc(String(m.q||""))+'</div><div data-act="claim" data-id="'+m.id+'" style="cursor:pointer;margin-top:4px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;display:inline-block">'+(m.by?'\u2705 '+esc(String(m.by))+' will do it':'\ud83d\ude4b I\u2019ll do it')+'</div>'}
+      if(m.k==="img"&&dd.indexOf("data:image/")===0)body+='<img src="'+dd+'" alt="" style="max-width:100%;border-radius:10px;display:block">';
+      else if(m.k==="voice"&&dd.indexOf("data:audio/")===0)body+='<audio controls src="'+dd+'" style="max-width:100%"></audio>';
+      else if(m.k==="file")body+='<span data-act="save" data-id="'+m.id+'" style="cursor:pointer;text-decoration:underline">📎 '+esc(m.fn||"file")+'</span>';
+      else if(m.k==="loc"&&typeof m.lat==="number"&&typeof m.lon==="number")body+='<a class="btn" href="'+mapUrl(m.lat,m.lon)+'" target="_blank" rel="noopener">📍 View on Google Maps</a>';
+      if(m.text)body+='<div style="overflow-wrap:anywhere;white-space:pre-wrap">'+esc(String(m.text))+'</div>';
+      acts='<span data-act="reply" data-id="'+m.id+'" style="cursor:pointer">Reply</span>';
+      acts+=' · '+QR.map(function(e){return '<span data-act="rx" data-id="'+m.id+'" data-e="'+e+'" style="cursor:pointer">'+e+'</span>'}).join(" ");
+      var cnt={};Object.keys(m.rx||{}).forEach(function(u){var e=m.rx[u];if(QR.indexOf(e)>=0)cnt[e]=(cnt[e]||0)+1});
+      rxh=Object.keys(cnt).map(function(e){return '<span data-act="rx" data-id="'+m.id+'" data-e="'+e+'" style="cursor:pointer;border:1px solid var(--line);border-radius:99px;padding:0 6px;margin:2px 4px 0 0;font-size:.8rem;display:inline-block">'+e+' '+cnt[e]+'</span>'}).join("");
+      if(me&&w){if(!m.k||m.k==="text")acts+=' · <span data-act="edit" data-id="'+m.id+'" style="cursor:pointer">Edit</span>';acts+=' · <span data-act="del" data-id="'+m.id+'" style="cursor:pointer">Delete</span>'}
+      if(me){var rd=others.some(function(x){return (x.seen||0)>=m.t}),dl=others.some(function(x){return (x.got||0)>=m.t});tick=rd?' <span style="color:#8be3ff">✓✓ Read</span>':dl?" ✓✓":" ✓"}
+    }
+    return '<div style="align-self:'+(me?"flex-end":"flex-start")+';max-width:85%;background:'+(me?"var(--accent)":"var(--bg)")+';color:'+(me?"#fff":"inherit")+';border:1px solid var(--line);border-radius:14px;padding:6px 12px"><div style="display:flex;align-items:center;gap:6px;font-size:.75rem;opacity:.9">'+avHtml(m,me)+'<span>'+esc(me?"You":(m.name||"Family"))+' · '+fmtT(m.t)+(m.edited?" (edited)":"")+tick+'</span></div>'+body+rxh+(acts?'<div style="font-size:.72rem;opacity:.8;margin-top:2px">'+acts+'</div>':"")+'</div>'}).join(""):'<div class="meta">'+(q?"No matches.":"No messages yet.")+'</div>';
+  if(keepPos){b.scrollTop=b.scrollHeight-ph;keepPos=false}else if(near&&!q)b.scrollTop=b.scrollHeight;
+  var mx=0,ch=false;CHAT.forEach(function(m){if(m.u!==myId&&rel(m)&&m.t>mx)mx=m.t});
+  if(mx>myGot){myGot=mx;ch=true}if(chatOpen&&!document.hidden&&near&&mx>mySeen){mySeen=mx;ch=true;S.chatRead=mx;save()}if(ch)pushMeta();
+  var tp=others.filter(function(x){return now()-(x.typ||0)<4500}).map(function(x){return x.name||"Someone"});
+  $("chatTyp").textContent=tp.length?tp.join(", ")+(tp.length>1?" are typing…":" is typing…"):"";
+  if(tp.length)setTimeout(chatRender,4700);updBadge();notifyNew()}
+function clearBar(){replyTo=null;editId=null;$("chatBar").style.display="none";$("chatBar").innerHTML=""}
+function setBar(t){$("chatBar").style.display="block";$("chatBar").innerHTML=esc(t)+' <span data-act="cancel" style="cursor:pointer;text-decoration:underline">Cancel</span>'}
+function post(x){if(!db||!myId)return;var d={u:myId,name:S.me,t:now(),c:curConv,g:S.gid};for(var k in x)d[k]=x[k];if(replyTo)d.r=replyTo;
+  db.collection("chat").doc().set(d).then(clearBar).catch(function(e){$("chatNote").textContent="Message not sent: "+((e&&e.message)||"unknown error")+". Open \ud83d\udc1e Status for details."})}
+function chatSend(){var v=$("chatIn").value.trim();if(!v||!db||!myId)return;if(v.charAt(0)==="/"&&runCmd(v)){$("chatIn").value="";hideCmd();return}
+  if(editId){var m=CHAT.filter(function(x){return x.id===editId})[0];
+    if(m&&m.u===myId&&now()-m.t<EDIT_MS){var d={};for(var k in m)d[k]=m[k];delete d.id;d.text=v.slice(0,500);d.edited=true;db.doc("chat/"+editId).set(d).catch(function(){})}
+    $("chatIn").value="";clearBar();return}
+  $("chatIn").value="";post({k:"text",text:v.slice(0,500)});myTyp=0;pushMeta()}
+function saveFile(m){claude.use("downloads").then(function(d){if(!d){$("chatNote").textContent="Saving files isn’t available here.";return}
+  var bin=atob(String(m.data||"").split(",")[1]||""),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+  return d.save({filename:m.fn||"file.txt",data:u}).catch(function(er){$("chatNote").textContent=er&&er.code==="rejected_extension"?"This file type can’t be saved here.":"Could not save the file."})}).catch(function(){})}
+$("chatSend").onclick=chatSend;
+$("chatIn").onkeydown=function(e){if(e.key==="Enter")chatSend()};
+$("chatIn").oninput=function(){var t=now();if(this.value&&t-lastTypW>2500){lastTypW=t;myTyp=t;pushMeta()}};
+$("chatQ").oninput=function(){if(this.value&&CL<300){CL=300;subChat()}chatRender()};
+$("chatBox").onscroll=function(){if(this.scrollTop<30&&CHAT.length>=CL&&!keepPos){CL+=60;keepPos=true;subChat()}};
+$("chatBox").onclick=function(e){var s=e.target.closest("[data-act]");if(!s)return;var id=s.dataset.id,a=s.dataset.act,m=CHAT.filter(function(x){return x.id===id})[0];if(!m)return;
+  if(a==="reply"){replyTo={n:m.name||"Family",t:String(m.text||(m.k==="img"?"Photo":m.k==="voice"?"Voice note":m.k==="file"?"File":"")).slice(0,80)};editId=null;setBar("Replying to "+replyTo.n+": "+replyTo.t);$("chatIn").focus()}
+  else if(a==="edit"){editId=id;replyTo=null;$("chatIn").value=m.text||"";setBar("Editing your message");$("chatIn").focus()}
+  else if(a==="del"){if(armed!==s){arm(s,"Tap again to delete");return}disarm(s);db.doc("chat/"+id).set({u:m.u,name:m.name,t:m.t,c:m.c,g:m.g,deleted:true}).catch(function(){})}
+  else if(a==="rx"){toggleRx(m,s.dataset.e)}
+  else if(a==="tick"){var dn2={},ti=+s.dataset.i;for(var k2 in (m.done||{}))dn2[k2]=m.done[k2];if(dn2[ti])delete dn2[ti];else dn2[ti]=S.me;db.doc("chat/"+m.id).update({done:dn2}).catch(function(){})}
+  else if(a==="claim"){if(m.by&&m.by!==S.me)return;db.doc("chat/"+m.id).update({by:m.by?"":S.me}).catch(function(){})}
+  else if(a==="vote"){var vv={},ix=+s.dataset.i;for(var uu in (m.votes||{}))vv[uu]=m.votes[uu];if(vv[myId]===ix)delete vv[myId];else vv[myId]=ix;db.doc("chat/"+m.id).update({votes:vv}).catch(function(){})}
+  else if(a==="save"){saveFile(m)}};
+$("chatBar").onclick=function(e){if(e.target.closest("[data-act=cancel]")){var was=editId;clearBar();if(was)$("chatIn").value=""}};
+$("chatEmoBtn").onclick=function(){var p=$("chatEmo");p.style.display=p.style.display==="none"?"block":"none"};
+$("chatEmo").onclick=function(e){var s=e.target.closest("[data-e]");if(s){$("chatIn").value+=s.dataset.e;$("chatIn").focus()}};
+$("chatFile").onchange=function(){var f=this.files[0],inp=this;if(!f||!db)return;
+  if(f.type.indexOf("image/")===0){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){
+    var s=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);var q=.7,u=c.toDataURL("image/jpeg",q);while(u.length>170000&&q>.3){q-=.1;u=c.toDataURL("image/jpeg",q)}
+    post({k:"img",data:u,text:$("chatIn").value.trim().slice(0,500)});$("chatIn").value=""};im.src=r.result};r.readAsDataURL(f)}
+  else{if(f.size>120000){$("chatNote").textContent="That file is too big. The limit is about 120 KB.";inp.value="";return}
+    var r2=new FileReader();r2.onload=function(){post({k:"file",data:r2.result,fn:f.name.slice(0,80)})};r2.readAsDataURL(f)}
+  inp.value=""};
+$("chatMic").onclick=function(){var btn=this;if(rec){rec.stop();return}
+  if(!navigator.mediaDevices||!window.MediaRecorder){$("chatNote").textContent="Voice notes are not available in this browser.";return}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){var ch=[],rt;rec=new MediaRecorder(st,{audioBitsPerSecond:24000});
+    rec.ondataavailable=function(e){if(e.data.size)ch.push(e.data)};
+    rec.onstop=function(){st.getTracks().forEach(function(t){t.stop()});btn.textContent="🎤";clearTimeout(rt);var blob=new Blob(ch,{type:ch[0]?ch[0].type:"audio/webm"});rec=null;
+      if(blob.size>150000){$("chatNote").textContent="That voice note is too long. Keep it under about 30 seconds.";return}
+      var r=new FileReader();r.onload=function(){post({k:"voice",data:r.result})};r.readAsDataURL(blob)};
+    rec.start();btn.textContent="⏹";rt=setTimeout(function(){if(rec)rec.stop()},30000)
+  }).catch(function(){$("chatNote").textContent="The microphone is blocked here, so voice notes can’t be recorded."})};
+var chatOpen=false;
+function updBadge(){if(S.chatRead===undefined&&db&&CHAT.length)S.chatRead=Math.max.apply(null,CHAT.map(function(m){return m.t||0}));
+  var n=chatOpen?0:CHAT.filter(function(m){return m.u!==myId&&rel(m)&&!m.deleted&&m.t>(S.chatRead||0)}).length,bd=$("navBadge");
+  bd.style.display=n?"block":"none";bd.textContent=n>9?"9+":n}
+function setChat(o){chatOpen=o;$("chatWin").style.display=o?"block":"none";$("navChat").classList.toggle("on",o);
+  if(o){chatRender();var b=$("chatBox");b.scrollTop=b.scrollHeight;chatRender()}else updBadge()}
+$("chatFab").onclick=function(){try{if(window.Notification&&Notification.permission==="default")Notification.requestPermission()}catch(e){}setChat(true)};$("chatClose").onclick=function(){setChat(false)};
+var watchId=null,lastPush=0,wl=null;
+function stopLive(){if(watchId!==null&&navigator.geolocation)navigator.geolocation.clearWatch(watchId);watchId=null;if(wl){try{wl.release()}catch(e){}wl=null}}
+$("shareLive").onchange=function(){
+  if(!this.checked){stopLive();log(S.me+" turned off live tracking");save();return}
+  if(!navigator.geolocation){$("locMsg").textContent="Live tracking is not available in this browser.";this.checked=false;return}
+  S.shareLoc=true;$("shareLoc").checked=true;
+  watchId=navigator.geolocation.watchPosition(function(p){var t=now();if(t-lastPush<5000)return;lastPush=t;S.meLoc={lat:p.coords.latitude,lon:p.coords.longitude,t:t};save();render()},
+    function(er){if(er&&er.code===3)return;stopLive();$("shareLive").checked=false;$("locMsg").textContent="Live tracking stopped: this page can’t read your location here. Paste your location below instead.";$("manLoc").style.display="flex"},
+    {enableHighAccuracy:true,maximumAge:2000,timeout:20000});
+  if(navigator.wakeLock&&navigator.wakeLock.request)navigator.wakeLock.request("screen").then(function(l){wl=l}).catch(function(){});
+  log(S.me+" turned on live tracking");save();render()};
+setInterval(liveRender,30000);
+var phT=null;
+function lv(id){var x=LIVE.filter(function(d){return d.id===id})[0];return x?(x.data()||{}):{}}
+function openPhone(el,i){phT=i;var cur,nm,s=String(i);
+  if(s.indexOf("live:")===0){var id=s.slice(5),lm=lv(id);cur=(S.phOv||{})[id]||lm.phone||"";nm=lm.name}
+  else{cur=i==="me"?S.meP:(S.members[i]||{}).p;nm=i==="me"?S.me:(S.members[i]||{}).n}
+  $("phName").textContent="Phone: "+(nm||"");$("phIn").value=cur||"";
+  var p=$("phPop"),r=el.getBoundingClientRect();p.style.display="block";
+  p.style.left=Math.max(4,Math.min(r.left,window.innerWidth-p.offsetWidth-8))+"px";p.style.top=Math.max(4,Math.min(r.bottom+6,window.innerHeight-p.offsetHeight-8))+"px";$("phIn").focus()}
+function phSave(v){if(String(phT).indexOf("live:")===0){S.phOv=S.phOv||{};if(v)S.phOv[phT.slice(5)]=v;else delete S.phOv[phT.slice(5)]}else if(phT==="me"){S.meP=v}else if(S.members[phT]){S.members[phT].p=v;log("Phone number "+(v?"saved":"cleared")+" for "+S.members[phT].n)}$("phPop").style.display="none";save();render();liveRender()}
+$("phSave").onclick=function(){phSave($("phIn").value.trim())};$("phClear").onclick=function(){phSave("")};
+$("phIn").onkeydown=function(e){if(e.key==="Enter")phSave(this.value.trim());if(e.key==="Escape")$("phPop").style.display="none"};
+document.addEventListener("contextmenu",function(e){var a=e.target.closest("[data-ph]");if(!a)return;e.preventDefault();openPhone(a,(a.dataset.ph==="me"||a.dataset.ph.indexOf("live:")===0)?a.dataset.ph:+a.dataset.ph)});
+document.addEventListener("click",function(e){if(!e.target.closest("#phPop,[data-a=callnew],[data-a=livecall],[data-a=grpcall],[data-a=grpnum],#avPhone"))$("phPop").style.display="none"});
+$("live").onclick=function(e){var b=e.target.closest("[data-a=livecall]");if(b)openPhone(b,"live:"+b.dataset.id)};
+$("avPhone").onclick=function(){$("avMenu").style.display="none";if(!avTarget)return;var inp=avTarget.querySelector("input.pf");openPhone(avTarget,inp.classList.contains("mepf")?"me":+inp.dataset.i)};
+$("chatLoc").onclick=function(){if(!db||!myId)return;
+  function send(la,lo){post({k:"loc",lat:la,lon:lo,text:"My location"})}
+  function fall(){if(S.meLoc&&now()-S.meLoc.t<30*60000)send(S.meLoc.lat,S.meLoc.lon);else $("chatNote").textContent="Couldn’t read your location here. Use Google Maps location sharing below, or paste your location under Me."}
+  if(S.meLoc&&now()-S.meLoc.t<120000){send(S.meLoc.lat,S.meLoc.lon);return}
+  if(!navigator.geolocation){fall();return}
+  navigator.geolocation.getCurrentPosition(function(p){S.meLoc={lat:p.coords.latitude,lon:p.coords.longitude,t:now()};send(p.coords.latitude,p.coords.longitude)},fall,{timeout:8000})};
+var curConv="g",nT=null,QR=["👍","❤️","😂","😮","🙏"];
+function rel(m){var c=m.c||"g";return c==="g"||c.split("_").indexOf(myId)>=0}
+function convOpts(){var sel=$("chatConv"),o='<option value="g">Family group</option>';
+  LIVE.forEach(function(d){if(d.id!==myId){var x=d.data()||{};o+='<option value="'+esc([myId,d.id].sort().join("_"))+'">Message '+esc(x.name||"Family member")+'</option>'}});
+  if(sel.getAttribute("data-s")!==o){sel.innerHTML=o;sel.setAttribute("data-s",o)}sel.value=curConv}
+$("chatConv").onchange=function(){curConv=this.value;chatRender();var b=$("chatBox");b.scrollTop=b.scrollHeight};
+function fmtT(t){if(!t)return"";var d=new Date(t),n=new Date(),tm=d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});return d.toDateString()===n.toDateString()?tm:d.toLocaleDateString([],{day:"numeric",month:"short"})+" "+tm}
+function avHtml(m,me){var im=me?S.meImg:lv(m.u).img,sz="width:22px;height:22px;border-radius:50%;flex:none;";
+  if(typeof im==="string"&&im.indexOf("data:image/")===0)return '<img src="'+im+'" alt="" style="'+sz+'object-fit:cover">';
+  return '<span style="'+sz+'background:var(--accent);color:#fff;display:grid;place-items:center;font-size:.7rem;border:1px solid rgba(255,255,255,.4)">'+esc(String((me?S.me:m.name)||"?")[0].toUpperCase())+'</span>'}
+function toggleRx(m,e){if(QR.indexOf(e)<0||!db||!myId)return;var rx={};for(var u in (m.rx||{}))rx[u]=m.rx[u];if(rx[myId]===e)delete rx[myId];else rx[myId]=e;db.doc("chat/"+m.id).update({rx:rx}).catch(function(){})}
+function notifyNew(){var mx=0;CHAT.forEach(function(m){if(m.u!==myId&&rel(m)&&!m.deleted&&m.t>mx)mx=m.t});
+  if(nT===null){nT=mx;return}
+  if(mx>nT){var m=CHAT.filter(function(x){return x.t===mx})[0];nT=mx;
+    if(m&&(!chatOpen||document.hidden)&&window.Notification&&Notification.permission==="granted"){try{new Notification((m.name||"Family")+" sent a message",{body:String(m.text||"").slice(0,80)})}catch(e){}}}}
+(function(){var cur="home",map={"Me":"home","Family":"family","Live family":"family","Family map":"map","Family group":"family","Activity":"more"},skip={hero:1,titleEdit:1,stylePanel:1,shareBox:1,chatFab:1,chatWin:1};
+  Array.prototype.forEach.call(document.querySelector("main").children,function(el){
+    if(el.tagName==="H2"){var k=map[el.textContent.trim()];if(k)cur=k}
+    if(skip[el.id])return;
+    el.dataset.tab=(el.id==="tips"||(el.querySelector&&el.querySelector("#shareApp")))?"more":cur})})();
+function showTab(t){S.tab=t;document.querySelectorAll("[data-tab]").forEach(function(el){el.classList.toggle("tab-on",el.dataset.tab===t)});
+  document.querySelectorAll("#nav [data-t]").forEach(function(b){b.classList.toggle("on",b.dataset.t===t)});window.scrollTo(0,0);mapUpdate()}
+document.querySelectorAll("#nav [data-t]").forEach(function(b){b.onclick=function(){showTab(b.dataset.t);save()}});
+$("navChat").onclick=function(){if(!chatOpen)try{if(window.Notification&&Notification.permission==="default")Notification.requestPermission()}catch(e){}setChat(!chatOpen)};
+showTab(S.tab||"home");
+var KP=[["Safe","😊","I’m safe"],["At home","🏠","At home"],["At school","🏫","At school"],["On the way","🚗","On my way"],["Playing","⚽","Playing"]],lockA=0;
+function kidsBuild(){$("kidsHi").textContent="Hi "+(S.me==="You"?"there":S.me)+"! 👋 How are you today?";
+  $("kidsGrid").innerHTML=KP.map(function(k){return '<button data-s="'+k[0]+'" class="'+(S.meStatus===k[0]?"sel":"")+'"><span style="font-size:2.4rem;line-height:1">'+k[1]+'</span>'+k[2]+'</button>'}).join("")}
+$("kidsGrid").onclick=function(e){var b=e.target.closest("button");if(!b)return;S.meStatus=b.dataset.s;S.meLast=now();log(S.me+" checked in: "+S.meStatus);save();render();fill();kidsBuild();
+  $("kidsMsg").textContent="Great! Your family knows 🎉";setTimeout(function(){$("kidsMsg").textContent=""},3500)};
+function setKids(on){S.kids=on;document.documentElement.classList.toggle("kids",on);if(on){showTab("home");kidsBuild()}save();applyPal()}
+$("kidsBtn").onclick=function(){setKids(true)};
+$("lockOpen").onclick=function(){var a=2+Math.floor(Math.random()*7),b=3+Math.floor(Math.random()*7);lockA=a+b;$("lockQ").textContent=" What is "+a+" + "+b+"? ";$("lockBox").style.display="inline";$("lockIn").value="";$("lockIn").focus()};
+$("lockGo").onclick=function(){if(+$("lockIn").value===lockA){$("lockBox").style.display="none";setKids(false)}else{$("lockQ").textContent=" Try again ";$("lockIn").value=""}};
+document.documentElement.classList.toggle("kids",!!S.kids);kidsBuild();if(S.kids&&S.tab==="more")showTab("home");
+var MAPS=null;
+function mapPts(){var a=[];if(S.shareLoc&&S.meLoc)a.push({id:"me",name:S.me,img:S.meImg,lat:S.meLoc.lat,lon:S.meLoc.lon,t:S.meLoc.t,status:S.meStatus,me:true});
+  LIVE.forEach(function(d){if(d.id===myId)return;var m=d.data()||{};if(typeof m.lat==="number"&&typeof m.lon==="number")a.push({id:d.id,name:m.name||"Family",img:m.img,lat:m.lat,lon:m.lon,t:m.lt||m.t,status:m.status,phone:(S.phOv&&S.phOv[d.id])||m.phone||""})});return a}
+function xy(p){return [(p.lon-MAPS.o.lon)*111320*Math.cos(MAPS.o.lat*Math.PI/180),-(p.lat-MAPS.o.lat)*110574]}
+function hav(a,b){var R=6371000,r=Math.PI/180,dl=(b.lat-a.lat)*r,dn=(b.lon-a.lon)*r,x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dn/2)*Math.sin(dn/2);return 2*R*Math.asin(Math.min(1,Math.sqrt(x)))}
+function fmtD(m){return m<1000?Math.round(m)+" m":(m/1000).toFixed(m<10000?1:0)+" km"}
+function niceD(m){var p=Math.pow(10,Math.floor(Math.log10(m))),f=m/p;return (f<1.5?1:f<3.5?2:f<7.5?5:10)*p}
+function zoomBy(f,px,py){var M=MAPS,wx=M.vx+(px-M.w/2)*M.mpp,wy=M.vy+(py-M.h/2)*M.mpp;M.mpp=Math.min(200000,Math.max(0.5,M.mpp*f));M.vx=wx-(px-M.w/2)*M.mpp;M.vy=wy-(py-M.h/2)*M.mpp;mapDraw()}
+function mapFit(){var M=MAPS,ps=mapPts();if(!ps.length)return;M.o={lat:ps[0].lat,lon:ps[0].lon};
+  var xs=ps.map(function(p){return xy(p)[0]}),ys=ps.map(function(p){return xy(p)[1]}),mn=Math.min.apply(null,xs),mx=Math.max.apply(null,xs),my=Math.min.apply(null,ys),mY=Math.max.apply(null,ys);
+  M.vx=(mn+mx)/2;M.vy=(my+mY)/2;M.mpp=Math.max((mx-mn)/(Math.max(M.w,200)*.6),(mY-my)/(Math.max(M.h,200)*.6),1.5);mapDraw()}
+function mapInfo(){var el=$("mInfo");if(!el)return;var ps=mapPts(),p=ps.filter(function(x){return x.id===MAPS.sel})[0];
+  if(!p){el.textContent=ps.length?"Tap a pin to see details. Drag to move the map, pinch or use + and − to zoom.":"No one is sharing a location yet. Tick “Share my location” on Home, or ask your family to.";return}
+  var me=ps.filter(function(x){return x.me})[0],dist=me&&!p.me?fmtD(hav(me,p)):"",d=String(p.phone||"").replace(/[^\d+]/g,"");
+  el.innerHTML='<b>'+esc(p.name)+'</b>'+(p.status?' · '+esc(p.status):'')+(dist?' · '+dist+' from you':'')+' · '+ago(p.t||0)+'<div class="actions"><a class="btn primary" href="'+mapUrl(p.lat,p.lon)+'" target="_blank" rel="noopener">Open in Google Maps</a>'+(d&&!p.me?'<a class="btn" href="tel:'+d+'">Call</a>':'')+'</div>'}
+function mapDraw(){var M=MAPS;if(!M||!M.cv)return;var r=M.cv.getBoundingClientRect();if(!r.width)return;var dpr=window.devicePixelRatio||1;M.w=r.width;M.h=r.height;
+  if(M.cv.width!==Math.round(r.width*dpr)){M.cv.width=Math.round(r.width*dpr);M.cv.height=Math.round(r.height*dpr)}
+  var c=M.ctx,cs=getComputedStyle(document.documentElement),acc=cs.getPropertyValue("--accent").trim()||"#2f7d6d",ink=cs.getPropertyValue("--ink").trim()||"#222",line=cs.getPropertyValue("--line").trim()||"#ddd",bg=cs.getPropertyValue("--bg").trim()||"#f6f4ef";
+  c.setTransform(dpr,0,0,dpr,0,0);c.fillStyle=bg;c.fillRect(0,0,M.w,M.h);
+  var step=niceD(M.mpp*90),x0=M.vx-M.w/2*M.mpp,x1=M.vx+M.w/2*M.mpp,y0=M.vy-M.h/2*M.mpp,y1=M.vy+M.h/2*M.mpp;
+  c.strokeStyle=line;c.lineWidth=1;c.beginPath();
+  for(var gx=Math.ceil(x0/step)*step;gx<x1;gx+=step){var gsx=M.w/2+(gx-M.vx)/M.mpp;c.moveTo(gsx,0);c.lineTo(gsx,M.h)}
+  for(var gy=Math.ceil(y0/step)*step;gy<y1;gy+=step){var gsy=M.h/2+(gy-M.vy)/M.mpp;c.moveTo(0,gsy);c.lineTo(M.w,gsy)}c.stroke();
+  var bl=step/M.mpp;c.strokeStyle=ink;c.lineWidth=2;c.beginPath();c.moveTo(12,M.h-14);c.lineTo(12+bl,M.h-14);c.stroke();
+  c.fillStyle=ink;c.font="12px system-ui,sans-serif";c.textAlign="left";c.textBaseline="alphabetic";c.fillText(fmtD(step),12,M.h-20);
+  (M.trail&&Object.keys(M.trail).forEach(function(id){var t=M.trail[id];if(t.length<2)return;c.strokeStyle=acc;c.globalAlpha=.55;c.lineWidth=3;c.lineJoin="round";c.beginPath();t.forEach(function(q,i){var z=xy(q),sx=M.w/2+(z[0]-M.vx)/M.mpp,sy=M.h/2+(z[1]-M.vy)/M.mpp;if(i)c.lineTo(sx,sy);else c.moveTo(sx,sy)});c.stroke();c.globalAlpha=1}));
+  M.hit=[];mapPts().forEach(function(p){var q=xy(p),sx=M.w/2+(q[0]-M.vx)/M.mpp,sy=M.h/2+(q[1]-M.vy)/M.mpp,R=20,hasImg=false;M.hit.push({id:p.id,sx:sx,sy:sy});
+    c.save();c.beginPath();c.arc(sx,sy,R,0,6.2832);c.closePath();c.fillStyle=acc;c.fill();
+    if(typeof p.img==="string"&&p.img.indexOf("data:image/")===0){var im=M.imgs[p.id];if(!im||im.s!==p.img){im={s:p.img,i:new Image(),ok:false};im.i.onload=function(){im.ok=true;mapDraw()};im.i.src=p.img;M.imgs[p.id]=im}
+      if(im.ok){c.clip();c.drawImage(im.i,sx-R,sy-R,2*R,2*R);hasImg=true}}
+    c.restore();c.lineWidth=p.id===M.sel?5:3;c.strokeStyle=p.me?"#fff":ink;c.beginPath();c.arc(sx,sy,R,0,6.2832);c.stroke();
+    if(!hasImg){c.fillStyle="#fff";c.font="bold 16px system-ui,sans-serif";c.textAlign="center";c.textBaseline="middle";c.fillText(String(p.name||"?")[0].toUpperCase(),sx,sy+1)}
+    c.fillStyle=ink;c.font="600 12px system-ui,sans-serif";c.textAlign="center";c.textBaseline="top";c.fillText(p.me?"You":p.name,sx,sy+R+4);
+    if(now()-(p.t||0)<90000){var ph=(Date.now()%1500)/1500;c.strokeStyle="#22c55e";c.globalAlpha=1-ph;c.lineWidth=2;c.beginPath();c.arc(sx,sy,R+4+ph*14,0,6.2832);c.stroke();c.globalAlpha=1;c.fillStyle="#22c55e";c.strokeStyle="#fff";c.lineWidth=2;c.beginPath();c.arc(sx+R*.7,sy-R*.7,6,0,6.2832);c.fill();c.stroke()}})}
+function mapUpdate(){var M=MAPS;if(!M||!M.cv)return;var r=M.cv.getBoundingClientRect();if(!r.width)return;M.w=r.width;M.h=r.height;
+  var ps=mapPts();M.trail=M.trail||{};
+  ps.forEach(function(p){var t=M.trail[p.id]=M.trail[p.id]||[],l=t[t.length-1];if(!l||hav(l,p)>5){t.push({lat:p.lat,lon:p.lon});if(t.length>40)t.shift()}});
+  var me=ps.filter(function(x){return x.me})[0];
+  if(M.follow&&me&&M.fitted){var q=xy(me);M.vx=q[0];M.vy=q[1];M.mpp=Math.min(M.mpp,15)}
+  if(!M.fitted&&ps.length){M.fitted=true;mapFit()}else mapDraw();mapInfo();mapList(ps)}
+function mapList(ps){var live=ps.filter(function(p){return now()-(p.t||0)<90000}).length,me=ps.filter(function(x){return x.me})[0];
+  $("mBadge").textContent=(live?"● ":"")+"Live · "+live+" of "+ps.length+" sharing";
+  var dir=ps.length>1?'<div class="actions" style="margin:0 0 8px"><a class="btn primary" href="https://www.google.com/maps/dir/'+ps.map(function(p){return p.lat+","+p.lon}).join("/")+'" target="_blank" rel="noopener">See everyone on Google Maps</a></div>':"";
+  $("mList").innerHTML=dir+ps.map(function(p){var on=now()-(p.t||0)<90000,dist=me&&!p.me?fmtD(hav(me,p))+" away · ":"";
+    return '<div class="row" data-pin="'+esc(p.id)+'" style="padding:8px 0;border-top:1px solid var(--line);cursor:pointer"><span style="width:10px;height:10px;border-radius:50%;background:'+(on?"#22c55e":"#9aa3b5")+'"></span><div class="grow"><div class="name">'+esc(p.me?"You":p.name)+'</div><div class="meta">'+dist+(on?"live now":"last seen "+ago(p.t||0))+'</div></div></div>'}).join("")}
+function mapTap(x,y){var M=MAPS,best=null,bd=28;(M.hit||[]).forEach(function(h){var d=Math.hypot(h.sx-x,h.sy-y);if(d<bd){bd=d;best=h.id}});M.sel=best;mapDraw();mapInfo()}
+(function(){var cv=$("fmap");MAPS={cv:cv,ctx:cv.getContext("2d"),vx:0,vy:0,mpp:20,o:{lat:0,lon:0},imgs:{},sel:null,fitted:false,w:0,h:0,hit:[]};var ptr={};
+  cv.onpointerdown=function(e){cv.setPointerCapture(e.pointerId);ptr[e.pointerId]={x:e.offsetX,y:e.offsetY,sx:e.offsetX,sy:e.offsetY};cv.style.cursor="grabbing"};
+  cv.onpointermove=function(e){var p=ptr[e.pointerId];if(!p)return;MAPS.follow=false;$("mFol").style.outline="";var ids=Object.keys(ptr);
+    if(ids.length===2){var o=ids.filter(function(k){return k!==String(e.pointerId)})[0],q=ptr[o],d0=Math.hypot(p.x-q.x,p.y-q.y);p.x=e.offsetX;p.y=e.offsetY;var d1=Math.hypot(p.x-q.x,p.y-q.y);if(d0>0&&d1>0)zoomBy(d0/d1,(p.x+q.x)/2,(p.y+q.y)/2)}
+    else{MAPS.vx-=(e.offsetX-p.x)*MAPS.mpp;MAPS.vy-=(e.offsetY-p.y)*MAPS.mpp;p.x=e.offsetX;p.y=e.offsetY;mapDraw()}};
+  cv.onpointerup=cv.onpointercancel=function(e){var p=ptr[e.pointerId];delete ptr[e.pointerId];cv.style.cursor="grab";if(p&&Math.hypot(e.offsetX-p.sx,e.offsetY-p.sy)<6)mapTap(e.offsetX,e.offsetY)};
+  cv.onwheel=function(e){e.preventDefault();zoomBy(e.deltaY>0?1.2:1/1.2,e.offsetX,e.offsetY)};
+  $("mZi").onclick=function(){zoomBy(1/1.5,MAPS.w/2,MAPS.h/2)};$("mZo").onclick=function(){zoomBy(1.5,MAPS.w/2,MAPS.h/2)};
+  $("mAll").onclick=function(){mapFit()};
+  $("mMe").onclick=function(){var me=mapPts().filter(function(x){return x.me})[0];if(!me){mapInfo();return}var q=xy(me);MAPS.vx=q[0];MAPS.vy=q[1];MAPS.mpp=Math.min(MAPS.mpp,12);mapDraw()};
+  $("mFol").onclick=function(){var me=mapPts().filter(function(x){return x.me})[0];if(!me){mapInfo();return}MAPS.follow=!MAPS.follow;this.style.outline=MAPS.follow?"3px solid var(--accent)":"";if(MAPS.follow)mapUpdate()};
+  $("mList").onclick=function(e){var r=e.target.closest("[data-pin]");if(!r)return;var p=mapPts().filter(function(x){return x.id===r.dataset.pin})[0];if(!p)return;var q=xy(p);MAPS.vx=q[0];MAPS.vy=q[1];MAPS.mpp=Math.min(MAPS.mpp,15);MAPS.sel=p.id;mapDraw();mapInfo()};
+  setInterval(function(){if(MAPS&&MAPS.cv.getBoundingClientRect().width&&mapPts().some(function(p){return now()-(p.t||0)<90000}))mapDraw()},1000);
+  setInterval(function(){if(MAPS&&MAPS.cv.getBoundingClientRect().width)mapList(mapPts())},15000);
+  window.addEventListener("resize",mapUpdate)})();
+mapUpdate();
+var GROUPS=[],RAWLIVE=[],RAWCHAT=[],RAWMETA=[];
+function grp(){LIVE=RAWLIVE.filter(function(d){return (d.data()||{}).g===S.gid});CHAT=RAWCHAT.filter(function(m){return m.g===S.gid});META=RAWMETA.filter(function(x){return x.g===S.gid})}
+function grpUi(){var has=!!S.gid;$("grpHas").style.display=has?"block":"none";$("grpNone").style.display=has?"none":"block";
+  if(has){$("grpName").textContent=S.gname||"Family group";$("grpCode").textContent=S.gid;$("grpMem").textContent="Members ("+Math.max(1,LIVE.length)+")";grpMembers()}}
+function newCode(){var c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",s="";for(var i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)];return s}
+function grpDone(){save();grp();grpUi();liveRender();chatRender();mapUpdate()}
+var grpCreate=function(){if(!db||!myId){$("grpMsg").textContent="Open the shared page signed in to Claude to create a group.";return}
+  var n=$("grpNew").value.trim();if(!n){$("grpMsg").textContent="Type a group name first.";return}var code=newCode();
+  db.doc("groups/"+code).set({name:n,owner:myId,t:now()}).then(function(){S.gid=code;delete S.leftGroup;S.gname=n;log("Created family group "+n);grpDone()}).catch(function(){$("grpMsg").textContent="Couldn’t create the group. You may need Contributor access."})};
+var grpJoinGo=function(){if(!db||!myId){$("grpMsg").textContent="Open the shared page signed in to Claude to join a group.";return}
+  var c=$("grpJoin").value.trim().toUpperCase(),g=GROUPS.filter(function(d){return d.id===c})[0];
+  if(!g){$("grpMsg").textContent="That code wasn’t found. Check it and try again.";return}
+  S.gid=c;delete S.leftGroup;S.gname=(g.data()||{}).name||"Family group";log("Joined family group "+S.gname);grpDone()};
+$("grpNew").onkeydown=function(e){if(e.key==="Enter")grpCreate()};$("grpJoin").onkeydown=function(e){if(e.key==="Enter")grpJoinGo()};
+$("grpInvite").onclick=function(){share("Join our family group “"+S.gname+"” on Family Circle. Open the link, choose Join group and enter the code "+S.gid+".",APP_URL)};
+$("grpCopy").onclick=function(){var b=this;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(S.gid).then(function(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy code"},1500)},function(){box(S.gid,false)})}else box(S.gid,false)};
+$("grpLeave").onclick=function(){if(armed!==this){arm(this,"Tap again to leave");return}disarm(this);
+  if(db&&myId)db.doc("members/"+myId).delete().catch(function(){});S.gid=null;S.gname=null;S.leftGroup=true;log("Left the family group");grpDone()};
+grpUi();
+function grpMembers(){var el=$("grpMembers");if(!el)return;
+  var rows=LIVE.map(function(d){return {id:d.id,m:d.data()||{}}});
+  if(!rows.some(function(r){return r.id===myId}))rows.unshift({id:myId||"me",m:{}});
+  rows.sort(function(a,b){return (b.id===myId||b.id==="me")-(a.id===myId||a.id==="me")});
+  el.innerHTML=rows.map(function(r){var me=r.id===myId||r.id==="me",m=r.m,nm=me?S.me:(m.name||"Family"),img=me?S.meImg:m.img,ph=me?S.meP:((S.phOv&&S.phOv[r.id])||m.phone),d=String(ph||"").replace(/[^\d+]/g,""),w=d.replace(/\D/g,"");
+    var av=(typeof img==="string"&&img.indexOf("data:image/")===0)?'<img src="'+img+'" alt="">':esc(String(nm||"?")[0].toUpperCase());
+    var avA=me?' data-a="grppic" title="Change my picture" style="cursor:pointer"':'',st=esc((me?S.meStatus:m.status)||"Safe");
+    var calls=me?'<button data-a="grpnum">'+(d?"Edit my number":"Add my number")+'</button>':(d?'<a class="btn primary" href="tel:'+d+'">Call</a><a class="btn" href="facetime:'+d+'">Video</a><a class="btn" href="https://wa.me/'+w+'" target="_blank" rel="noopener">WhatsApp</a>':'<button data-a="grpcall" data-id="'+esc(r.id)+'">Call</button>');
+    var dm=me?'':'<button data-a="grpdm" data-id="'+esc(r.id)+'">💬 Message</button>';
+    return '<div class="card" style="margin:0"><div class="row"><div class="av"'+avA+'>'+av+'</div><div class="grow"><div class="name">'+esc(nm)+(me?" (you)":"")+'</div><div class="meta">'+st+(me?" · tap your picture to change it":"")+'</div></div></div><div class="actions" data-ph="'+(me?"me":"live:"+esc(r.id))+'">'+calls+dm+'</div></div>'}).join("")}
+$("grpMembers").onclick=function(e){var b=e.target.closest("[data-a]");if(!b)return;var a=b.dataset.a,id=b.dataset.id;
+  if(a==="grppic"){var inp=document.querySelector("label.av input.mepf");if(inp)inp.click()}
+  else if(a==="grpnum")openPhone(b,"me");
+  else if(a==="grpcall")openPhone(b,"live:"+id);
+  else if(a==="grpdm"){curConv=[myId,id].sort().join("_");setChat(true);chatRender()}};
+var CROP=null,cropDrag=null;
+function openCrop(file,cb){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){
+  var S0=280,base=Math.max(S0/im.width,S0/im.height);CROP={im:im,cb:cb,base:base,z:1,x:(S0-im.width*base)/2,y:(S0-im.height*base)/2};
+  $("cropZ").value=1;$("cropPop").style.display="flex";cropDraw()};im.src=r.result};r.readAsDataURL(file)}
+function cropDraw(){var c=$("cropCv").getContext("2d"),C=CROP,S0=280;if(!C)return;var s=C.base*C.z;c.clearRect(0,0,S0,S0);c.fillStyle="#e9e9e9";c.fillRect(0,0,S0,S0);c.drawImage(C.im,C.x,C.y,C.im.width*s,C.im.height*s);
+  c.fillStyle="rgba(0,0,0,.55)";c.beginPath();c.rect(0,0,S0,S0);c.arc(S0/2,S0/2,S0/2-6,0,6.2832,true);c.fill("evenodd");
+  c.strokeStyle="#fff";c.lineWidth=2;c.beginPath();c.arc(S0/2,S0/2,S0/2-6,0,6.2832);c.stroke()}
+function cropZoom(z){if(!CROP)return;var C=CROP,S0=280,so=C.base*C.z,cx=(S0/2-C.x)/so,cy=(S0/2-C.y)/so;C.z=Math.min(4,Math.max(0.3,z));var sn=C.base*C.z;C.x=S0/2-cx*sn;C.y=S0/2-cy*sn;$("cropZ").value=C.z;cropDraw()}
+$("cropCv").onpointerdown=function(e){this.setPointerCapture(e.pointerId);cropDrag={x:e.offsetX,y:e.offsetY}};
+$("cropCv").onpointermove=function(e){if(!cropDrag||!CROP)return;CROP.x+=e.offsetX-cropDrag.x;CROP.y+=e.offsetY-cropDrag.y;cropDrag={x:e.offsetX,y:e.offsetY};cropDraw()};
+$("cropCv").onpointerup=$("cropCv").onpointercancel=function(){cropDrag=null};
+$("cropCv").onwheel=function(e){e.preventDefault();cropZoom(CROP?CROP.z*(e.deltaY>0?0.92:1.08):1)};
+$("cropZ").oninput=function(){cropZoom(+this.value)};
+$("cropNo").onclick=function(){$("cropPop").style.display="none";CROP=null};
+$("cropOk").onclick=function(){if(!CROP)return;var C=CROP,S0=280,k=160/(S0-12),s=C.base*C.z,o=document.createElement("canvas");o.width=o.height=160;var c=o.getContext("2d");
+  c.fillStyle="#e9e9e9";c.fillRect(0,0,160,160);c.drawImage(C.im,(C.x-6)*k,(C.y-6)*k,C.im.width*s*k,C.im.height*s*k);
+  var u=o.toDataURL("image/jpeg",.85),cb=C.cb;$("cropPop").style.display="none";CROP=null;cb(u)};
+document.addEventListener("change",function(e){var t=e.target;if(!t.classList||!t.classList.contains("pf")||!t.files||!t.files[0])return;
+  var mine=t.classList.contains("mepf"),mem=!mine&&t.closest&&t.closest("#list");if(!mine&&!mem)return;
+  e.stopPropagation();var f=t.files[0],i=+t.dataset.i;
+  openCrop(f,function(u){if(mine){S.meImg=u;log(S.me+" updated their photo")}else if(S.members[i]){S.members[i].img=u;log("Photo updated for "+S.members[i].n)}save();render()});
+  t.value=""},true);
+var PALS=[["Indigo","#5b5bd6","#ff7eb6","#8b8bff","#ff8fc0"],["Ocean","#0a84c6","#19c3b1","#4cb8f0","#3ad6c5"],["Forest","#2f7d52","#9bc53d","#5ccf8b","#b6e05a"],["Sunset","#f0603a","#ffb347","#ff8a65","#ffc56b"],["Rose","#d6336c","#ff8fab","#ff6fa3","#ffa6bf"],["Violet","#7c3aed","#38bdf8","#a78bfa","#67d4fb"],["Teal","#2f7d6d","#1f5a7a","#5cc0ab","#4aa3c9"]];
+function applyPal(){var r=document.documentElement.style,p=!S.kids&&S.pal&&PALS&&PALS.filter(function(x){return x[0]===S.pal})[0];
+  if(!p){r.removeProperty("--accent");r.removeProperty("--accent2")}else{var d=isDark();r.setProperty("--accent",d?p[3]:p[1]);r.setProperty("--accent2",d?p[4]:p[2])}mapDraw()}
+function palBuild(){$("palGrid").innerHTML=[["Default","#5b5bd6","#ff7eb6"]].concat(PALS).map(function(p){var sel=(S.pal||"Default")===p[0];
+  return '<button data-p="'+p[0]+'" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;border:'+(sel?"2px solid var(--accent)":"1px solid var(--line)")+'"><span style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,'+p[1]+','+p[2]+')"></span><span style="font-size:.75rem">'+p[0]+'</span></button>'}).join("")}
+$("palBtn").onclick=function(){palBuild();var p=$("palPop"),r=this.getBoundingClientRect();p.style.display="block";
+  p.style.left=Math.max(8,Math.min(r.left,window.innerWidth-p.offsetWidth-8))+"px";p.style.top=Math.max(8,Math.min(r.bottom+6,window.innerHeight-p.offsetHeight-90))+"px"};
+$("palGrid").onclick=function(e){var b=e.target.closest("[data-p]");if(!b)return;var n=b.dataset.p;if(n==="Default")delete S.pal;else S.pal=n;applyPal();palBuild();save()};
+document.addEventListener("click",function(e){if(!e.target.closest("#palPop,#palBtn"))$("palPop").style.display="none"});
+applyPal();
+var CMDS=[["/help","See all programs"],["/sos","Send a help alert"],["/here","Share my location"],["/checkin","Check in, e.g. /checkin home"],["/poll","Vote: /poll Dinner? | Pizza | Rice"],["/call","Call someone, e.g. /call Mom"],["/dice","Roll a dice"],["/coin","Flip a coin"],["/time","Share the time"],["/shop","Shopping list: /shop milk, eggs, rice"],["/todo","To-do list: /todo wash dishes, sweep"],["/pickup","Ask someone to pick up: /pickup Mia 4pm"],["/late","Say you are late: /late 30"]],NOARG={"/help":1,"/sos":1,"/here":1,"/dice":1,"/coin":1,"/time":1},sysT=null;
+function note(t){var e=$("chatSys");e.textContent=t;clearTimeout(sysT);sysT=setTimeout(function(){e.textContent=""},15000)}
+function hideCmd(){$("chatCmd").style.display="none"}
+function showCmd(f){var l=CMDS.filter(function(x){return !f||x[0].indexOf(f)===0});if(!l.length){hideCmd();return}
+  $("chatCmd").innerHTML=l.map(function(x){return '<div data-c="'+x[0]+'" style="padding:8px 10px;border-bottom:1px solid var(--line);cursor:pointer"><b>'+x[0]+'</b> <span class="meta">'+esc(x[1])+'</span></div>'}).join("");$("chatCmd").style.display="block"}
+function runCmd(v){var sp=v.indexOf(" "),c=(sp<0?v:v.slice(0,sp)).toLowerCase(),a=sp<0?"":v.slice(sp+1).trim();
+  if(!CMDS.some(function(x){return x[0]===c})){note("Unknown program. Type /help to see them all.");return true}
+  if(c==="/help"){note("Programs: "+CMDS.map(function(x){return x[0]+" – "+x[1]}).join("   ·   "));return true}
+  if(c==="/sos"){S.meStatus="Needs help";S.meLast=now();log(S.me+" sent a help alert");save();render();fill();post({k:"text",text:"🆘 I need help! "+a});return true}
+  if(c==="/here"){$("chatLoc").click();return true}
+  if(c==="/checkin"){var mp={safe:"Safe",home:"At home",school:"At school",work:"At work",way:"On the way",playing:"Playing"},st=mp[a.toLowerCase()]||a||"Safe";S.meStatus=st;S.meLast=now();log(S.me+" checked in: "+st);save();render();fill();post({k:"text",text:"✅ Checked in: "+st});return true}
+  if(c==="/poll"){var p=a.split("|").map(function(x){return x.trim()}).filter(Boolean);if(p.length<3){note("Use: /poll Question | Option 1 | Option 2");return true}post({k:"poll",q:p[0].slice(0,120),opts:p.slice(1,7).map(function(x){return x.slice(0,40)}),votes:{}});return true}
+  if(c==="/call"){var q=a.toLowerCase(),ph="",nm="";LIVE.forEach(function(d){var x=d.data()||{};if(!ph&&q&&String(x.name||"").toLowerCase().indexOf(q)>=0){ph=(S.phOv&&S.phOv[d.id])||x.phone||"";nm=x.name}});
+    if(!ph)S.members.forEach(function(x){if(!ph&&q&&String(x.n||"").toLowerCase().indexOf(q)>=0){ph=x.p||"";nm=x.n}});
+    var dn=String(ph).replace(/[^\d+]/g,"");if(!dn){note(q?"No phone number found for “"+a+"”. Add one with the Call button on their card.":"Use: /call Mom");return true}note("Calling "+nm+"…");location.href="tel:"+dn;return true}
+  if(c==="/shop"||c==="/todo"){var its=a.split(/[,\n]/).map(function(x){return x.trim()}).filter(Boolean).slice(0,20).map(function(x){return x.slice(0,50)});if(!its.length){note("Use: "+c+" item 1, item 2, item 3");return true}post({k:"list",q:c==="/shop"?"Shopping list":"To-do list",ic:c==="/shop"?"\ud83d\uded2":"\ud83d\udcdd",items:its,done:{}});return true}
+  if(c==="/pickup"){post({k:"task",q:"\ud83d\ude97 Please pick up "+(a||"the kids"),by:""});return true}
+  if(c==="/late"){var mn=parseInt(a,10);post({k:"text",text:"\u23f0 I\u2019ll be late"+(mn?" \u2013 about "+mn+" min":"")});return true}
+  if(c==="/dice"){post({k:"text",text:"🎲 Rolled a "+(1+Math.floor(Math.random()*6))});return true}
+  if(c==="/coin"){post({k:"text",text:"🪙 "+(Math.random()<.5?"Heads":"Tails")});return true}
+  if(c==="/time"){post({k:"text",text:"🕒 "+new Date().toLocaleString()});return true}
+  return true}
+$("chatCmd").onclick=function(e){var r=e.target.closest("[data-c]");if(!r)return;var c=r.dataset.c;hideCmd();if(NOARG[c]){runCmd(c);$("chatIn").value=""}else{$("chatIn").value=c+" ";$("chatIn").focus()}};
+$("chatProg").onclick=function(){if($("chatCmd").style.display==="block")hideCmd();else showCmd("")};
+$("chatIn").addEventListener("input",function(){var v=this.value;if(v.charAt(0)==="/"&&v.indexOf(" ")<0)showCmd(v.toLowerCase());else hideCmd()});
+$("copyLink").onclick=function(){var b=this;function done(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy link"},1500)}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(APP_URL).then(done,function(){box(APP_URL,false)})}else box(APP_URL,false)};
+$("shareApp").onclick=function(){share("Join our family circle:",APP_URL)};
+$("shareClose").onclick=function(){$("shareBox").style.display="none"};
+$("meShareLoc").onclick=function(){if(S.meLoc)share("My location:",mapUrl(S.meLoc.lat,S.meLoc.lon))};
+$("meRefresh").onclick=function(){if(!navigator.geolocation)return;navigator.geolocation.getCurrentPosition(function(p){S.meLoc={lat:p.coords.latitude,lon:p.coords.longitude,t:now()};log(S.me+" updated their location");save();render()},function(){$("locMsg").textContent="Could not update location. You can paste it below instead.";$("manLoc").style.display="flex"},{timeout:10000})};
+$("heroPf").onchange=function(){var inp=this,fs=Array.prototype.slice.call(inp.files,0,4);if(!fs.length)return;var out=[],n=0;
+  function fin(){if(++n===fs.length){S.covers=out.filter(Boolean);delete S.cover;log("Cover photos updated");save();render()}}
+  fs.forEach(function(f,i){var r=new FileReader();r.onload=function(){var im=new Image();
+    im.onload=function(){var s=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+      c.getContext("2d").drawImage(im,0,0,c.width,c.height);out[i]=c.toDataURL("image/jpeg",.8);fin()};
+    im.onerror=fin;im.src=r.result};r.readAsDataURL(f)});
+  inp.value=""};
+$("hero").addEventListener("contextmenu",function(e){
+  if(e.target===$("appTitle")||e.target.closest(".heroS"))return;e.preventDefault();avTarget=$("hero");
+  $("avChange").style.display="block";$("avName").style.display="none";$("avNameRow").style.display="none";
+  $("avFit").style.display="block";$("avPos").style.display="block";$("avPhone").style.display="none";$("avFit").textContent=S.coverFit==="contain"?"Fill banner (crop)":"Fit whole photo";$("avPos").textContent="Photo position: "+({top:"Top",center:"Middle",bottom:"Bottom"}[S.coverPos||"center"]);
+  $("avRemove").style.display=(S.cover||(S.covers&&S.covers.length))?"block":"none";
+  var mn=$("avMenu");mn.style.display="block";
+  mn.style.left=Math.max(4,Math.min(e.clientX,window.innerWidth-170))+"px";mn.style.top=e.clientY+"px"});
+$("appTitle").addEventListener("contextmenu",function(e){e.preventDefault();openStyle(e,"title",$("appTitle"))});
+function saveTitle(){var v=$("titleIn").value.trim();if(v){S.title=v;log("Title changed to "+v);save()}$("titleEdit").style.display="none";render()}
+$("titleSave").onclick=saveTitle;
+$("titleIn").onkeydown=function(e){if(e.key==="Enter")saveTitle();if(e.key==="Escape")$("titleEdit").style.display="none"};
+$("meRm").onclick=function(){delete S.meImg;log(S.me+" removed their photo");save();render()};
+$("shareLoc").onchange=function(){
+  S.shareLoc=this.checked;save();
+  if(!S.shareLoc){stopLive();$("shareLive").checked=false;S.meLoc=null;log(S.me+" stopped sharing location");save();render();return}
+  if(!navigator.geolocation){$("locMsg").textContent="Location is not available in this browser.";S.shareLoc=false;$("shareLoc").checked=false;save();return}
+  navigator.geolocation.getCurrentPosition(function(p){S.meLoc={lat:p.coords.latitude,lon:p.coords.longitude,t:now()};log(S.me+" is sharing location");save();render()},
+    function(er){S.shareLoc=false;$("shareLoc").checked=false;$("locMsg").textContent=(er&&er.code===1?"This page is not allowed to read your phone’s location here. ":"Could not get your location. ")+"You can paste it below instead: in Google Maps, press and hold your spot, then tap the coordinates at the top to copy them.";$("manLoc").style.display="flex";save()},{timeout:10000,enableHighAccuracy:true});
+};
+$("shareBat").onchange=function(){
+  S.shareBat=this.checked;save();
+  if(S.shareBat&&navigator.getBattery){navigator.getBattery().then(function(b){S.meBat=Math.round(b.level*100);save();render()}).catch(function(){})}
+  else if(S.shareBat){$("locMsg").textContent="Battery info is not available in this browser."}
+  render();
+};
+var LIVE=[],myId=null,db=null,tm=null,CHAT=[];
+
+function liveRender(){
+  chatRender();mapUpdate();var el=$("live"),nt=$("liveNote");
+  if(!db||!myId){nt.textContent="Live sharing is off here. Open the shared page while signed in to Claude to see your family on this screen.";el.innerHTML="";return}
+  nt.textContent=S.gid?"Everyone in your family group appears here. Each person can change only their own card.":"Create or join a family group above to see your family here.";
+  var rows=LIVE.map(function(x){return {id:x.id,m:x.data()||{}}});
+  var pts=rows.filter(function(r){return typeof r.m.lat==="number"&&typeof r.m.lon==="number"}).map(function(r){return r.m.lat+","+r.m.lon});
+  var others=rows.filter(function(r){return r.id!==myId});
+  el.innerHTML=(pts.length>1?'<div class="actions" style="margin:0 0 10px"><a class="btn primary" href="https://www.google.com/maps/dir/'+pts.join("/")+'" target="_blank" rel="noopener">View everyone on one map</a></div>':'')+
+  (others.map(function(r){var m=r.m,hrs=(now()-(m.t||0))/36e5,stale=hrs>12,help=m.status==="Needs help";
+    var im=typeof m.img==="string"&&m.img.indexOf("data:image/")===0?'<img src="'+m.img+'" alt="">':esc(String(m.name||"?")[0].toUpperCase());
+    var d=String((S.phOv&&S.phOv[r.id])||m.phone||"").replace(/[^\d+]/g,""),w=d.replace(/\D/g,"");
+    var ph=d?'<a class="btn primary" href="tel:'+d+'">Call</a><a class="btn" href="facetime:'+d+'">FaceTime video</a><a class="btn" href="https://wa.me/'+w+'" target="_blank" rel="noopener">WhatsApp</a>':'<button data-a="livecall" data-id="'+esc(r.id)+'">Call</button>';
+    var mp=typeof m.lat==="number"&&typeof m.lon==="number"?'<a class="btn" href="'+mapUrl(m.lat,m.lon)+'" target="_blank" rel="noopener">View on Google Maps</a>':'';
+    return '<div class="card"><div class="row"><div class="av">'+im+'</div><div class="grow"><div class="name">'+esc(m.name||"Family member")+'</div><div class="meta">Updated '+ago(m.t||0)+(typeof m.lt==="number"?" · location "+ago(m.lt):"")+(typeof m.bat==="number"?" · battery "+m.bat+"%":"")+'</div></div><span class="pill '+(help?"help":stale?"stale":"ok")+'">'+(stale&&!help?"No update in "+Math.floor(hrs)+" h":esc(m.status||"Safe"))+'</span></div><div class="actions" data-ph="live:'+esc(r.id)+'">'+ph+mp+'</div></div>'}).join("")||'<div class="meta">No one else has joined yet. Share this page with your family.</div>');applyItems();
+}
+window.pushMe=function(){if(!db||!myId||!S.gid)return;clearTimeout(tm);tm=setTimeout(function(){
+  var sl=S.shareLoc&&S.meLoc;
+  db.doc("members/"+myId).set({g:S.gid,name:S.me,status:S.meStatus,t:S.meLast,phone:S.meP||"",img:S.meImg||"",lat:sl?S.meLoc.lat:null,lon:sl?S.meLoc.lon:null,lt:sl?S.meLoc.t:null,bat:S.shareBat&&S.meBat!=null?S.meBat:null}).catch(function(){})},700)};
+(async function(){try{
+  if(!window.claude){liveRender();return}
+  db=await claude.use("db");var user=await claude.use("user");
+  if(!db||!user){db=null;liveRender();return}
+  myId=await user.id();if(!myId){db=null;liveRender();return}
+  var me=await user.me();if(me&&me.name&&S.me==="You"){S.me=me.name;save();render()}
+  db.collection("members").onSnapshot(function(snap){RAWLIVE=snap.docs;grp();grpUi();liveRender()},function(){db=null;liveRender()});
+  db.collection("groups").onSnapshot(function(s){GROUPS=s.docs;
+    if(!S.gid&&!S.leftGroup&&window.FC_AUTOJOIN){var dg=GROUPS.filter(function(d){return d.id===window.FC_AUTOJOIN})[0];if(dg){S.gid=window.FC_AUTOJOIN;S.gname=(dg.data()||{}).name||"Our Family";log("Joined family group "+S.gname);grpDone();return}}
+    grpUi()},function(){});
+  subChat();db.collection("chatmeta").onSnapshot(function(s){RAWMETA=s.docs.map(function(d){var x=d.data()||{};x.id=d.id;return x});grp();chatRender()},function(){});
+  window.pushMe();
+}catch(e){db=null;liveRender()}})();
+var DEFSUB="Check in, stay in touch, and know everyone is okay.";
+var LABEL={title:"Title",head:"Section headings",name:"Names",sub:"Subtitle",small:"Small text",log:"Activity text",pill:"Status labels",btn:"Buttons"};
+var SEL={title:".hero h1",head:"h2",name:".name",sub:".heroS",small:".meta,.note,.sw",log:".log li",pill:".pill",btn:"button,a.btn,label.pl"};
+var curKey=null,curEl=null,curText="";
+var armed=null;
+function arm(b,label){if(armed&&armed!==b)disarm(armed);armed=b;b.dataset.old=b.textContent;b.textContent=label;setTimeout(function(){if(armed===b)disarm(b)},4000)}
+function disarm(b){if(armed===b)armed=null;if(b.dataset.old){b.textContent=b.dataset.old;delete b.dataset.old}}
+function hex(c){var m=c.match(/\d+/g);if(!m)return"#000000";return"#"+m.slice(0,3).map(function(n){return("0"+(+n).toString(16)).slice(-2)}).join("")}
+function applyStyle(){var css="",t2=S.ts2||{};Object.keys(t2).forEach(function(k){var t=t2[k],p="";if(!SEL[k])return;if(t.ff)p+="font-family:"+t.ff+" !important;";if(t.size)p+="font-size:"+t.size+"px !important;";if(t.color)p+="color:"+t.color+" !important;";if(t.bold)p+="font-weight:700 !important;";if(p)css+=SEL[k]+"{"+p+"}"});
+  var el=$("dynStyle");if(!el){el=document.createElement("style");el.id="dynStyle";document.head.appendChild(el)}el.textContent=css}
+function openStyle(e,key,el){
+  var c=getComputedStyle(el);curKey=key;curEl=el;curText=el.textContent.trim().slice(0,40);
+  var it=(S.ts3||{})[key+"|"+curText],t=it||(S.ts2||{})[key]||{};$("fOne").checked=!!it;
+  $("spName").textContent="Style: "+LABEL[key];
+  $("fFont").value=t.ff||"";$("fSize").value=t.size||Math.round(parseFloat(c.fontSize));$("fSizeV").textContent=$("fSize").value+" px";
+  $("fBold").checked=!!t.bold;$("fColor").value=t.color||hex(c.color);
+  var tx=key==="title"||key==="sub";$("spTitleRow").style.display=tx?"block":"none";if(tx)$("spTitleIn").value=key==="title"?(S.title||"Family Circle"):(S.sub||DEFSUB);
+  var p=$("stylePanel");p.style.display="block";
+  p.style.left=Math.max(4,Math.min(e.clientX,window.innerWidth-p.offsetWidth-8))+"px";
+  p.style.top=Math.max(4,Math.min(e.clientY,window.innerHeight-p.offsetHeight-8))+"px"}
+function st(el,p,v){if(v)el.style.setProperty(p,v,"important");else el.style.removeProperty(p)}
+function applyItems(){var t3=S.ts3||{};Object.keys(t3).forEach(function(k){var i=k.indexOf("|"),c=k.slice(0,i),tx=k.slice(i+1),t=t3[k];if(!SEL[c])return;
+  document.querySelectorAll(SEL[c]).forEach(function(el){if(el.textContent.trim().slice(0,40)!==tx)return;st(el,"font-family",t.ff);st(el,"font-size",t.size?t.size+"px":"");st(el,"color",t.color);st(el,"font-weight",t.bold?"700":"")})})}
+function tgt(){var one=$("fOne").checked,k=one?curKey+"|"+curText:curKey;if(one){S.ts3=S.ts3||{};return S.ts3[k]=S.ts3[k]||{}}S.ts2=S.ts2||{};return S.ts2[k]=S.ts2[k]||{}}
+function clearEl(){if(curEl)["font-family","font-size","color","font-weight"].forEach(function(p){curEl.style.removeProperty(p)})}
+function refresh(){applyStyle();applyItems();save()}
+function updStyle(){if(!curKey)return;var t=tgt();t.ff=$("fFont").value;t.size=+$("fSize").value;t.bold=$("fBold").checked;$("fSizeV").textContent=t.size+" px";refresh()}
+$("fFont").onchange=updStyle;$("fSize").oninput=updStyle;$("fBold").onchange=updStyle;
+$("fColor").oninput=function(){if(!curKey)return;tgt().color=this.value;refresh()};
+$("fOne").onchange=function(){if(!curKey)return;if(this.checked){updStyle();tgt().color=$("fColor").value}else{if(S.ts3)delete S.ts3[curKey+"|"+curText];clearEl()}refresh()};
+$("fReset").onclick=function(){if(curKey){if($("fOne").checked){if(S.ts3)delete S.ts3[curKey+"|"+curText];clearEl()}else if(S.ts2)delete S.ts2[curKey]}$("stylePanel").style.display="none";refresh()};
+$("fClose").onclick=function(){$("stylePanel").style.display="none"};
+$("spTitleIn").oninput=function(){if(curKey==="sub"){S.sub=this.value;$("heroSub").textContent=this.value||DEFSUB}else{S.title=this.value;$("appTitle").textContent=this.value||"Family Circle";document.title=this.value||"Family Circle"}save()};
+document.addEventListener("contextmenu",function(e){
+  if(e.defaultPrevented||e.target.closest("#stylePanel,#avMenu"))return;
+  var k=null;["title","sub","btn","head","name","pill","log","small"].some(function(x){if(e.target.closest(SEL[x])){k=x;return true}});
+  if(!k)return;e.preventDefault();openStyle(e,k,e.target.closest(SEL[k]))});
+document.addEventListener("click",function(e){if(!e.target.closest("#stylePanel"))$("stylePanel").style.display="none"});
+applyStyle();
+liveRender();
+fill();render();
+})();
+</script>
+</body>
+</html>
